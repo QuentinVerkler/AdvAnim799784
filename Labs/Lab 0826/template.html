@@ -1,0 +1,66 @@
+<!DOCTYPE>
+  <html>
+    <head>
+      <script src = "jsvector.js"></script>
+    </head>
+    <body>
+      <script>
+      //getMagnitude and getDirection check
+      var v1 = new JSVector(3, 4);
+      console.log("Supposed mag: 5; Actual: " + v1.getMagnitude());
+      console.log("Supposed dir: .927; Actual: " + v1.getDirection());
+      //setMagnitude check
+      v1.setMagnitude(7);
+      console.log("Supposed mag: 7; Actual: " + v1.getMagnitude());
+      console.log("Supposed dir: .927; Actual: " + v1.getDirection());
+      //setMagnitude check
+      v1.setDirection(1);
+      console.log("Supposed mag: 7; Actual: " + v1.getMagnitude());
+      console.log("Supposed dir: 1; Actual: " + v1.getDirection());
+      //toString check
+      console.log(v1.toString());
+      var v2 = new JSVector(3, 4);
+      var v3 = new JSVector(6, 8);
+      //addGetNew and subGetNew check
+      var v4 = JSVector.addGetNew(v2, v3);
+      console.log("Supposed x: 9; Supposed y: 12; Supposed mag: 15; Supposed dir: .927");
+      console.log(v2.toString());
+      var v5 = JSVector.subGetNew(v3, v2);
+      console.log("Supposed x: 3; Supposed y: 4; Supposed mag: 5; Supposed dir: .927");
+      console.log(v5.toString());
+      var v6 = new JSVector(2, 2);
+      var v7 = new JSVector(2, 2);
+      //multiply and divide check
+      v6.multiply(2);
+      console.log("Supposed x: 4; Supposed y: 4; Supposed mag: 5.6568; Supposed dir: .785");
+      console.log(v6.toString());
+      v7.divide(2);
+      console.log("Supposed x: 1; Supposed y: 1; Supposed mag: 1.414; Supposed dir: .785");
+      console.log(v7.toString());
+      //normalize check
+      v1.normalize();
+      console.log("Supposed x: .6; Supposed y: .8; Supposed mag: 1; Supposed dir: 1");
+      console.log(v1.toString());
+      //distance and distanceSquared check
+      console.log("Supposed distance: 5");
+      console.log("Distance: " + v2.distance(v3));
+      v6 = new JSVector(4, 4);
+      v7 = new JSVector(5, 5);
+      console.log("Supposed distance squared: 2");
+      console.log("Distance: " + v6.distanceSquared(v7));
+      //rotation chech
+      v6.rotate(.7853981634);
+      console.log("Supposed x: 4; Supposed y: 4; Supposed mag: 5.6568; Supposed dir: 1.57");
+      console.log(v6.toString());
+      //copy check
+      var v8 = new JSVector(9, 12);
+      var v9 = v8.copy();
+      console.log("Supposed x: 9; Supposed y: 12; Supposed mag: 15; Supposed dir: .927");
+      console.log(v9.toString())
+      //angleBetween check
+      var v10 = new JSVector(0, 12);
+      console.log("Supposed angleBetween: .06435011088");
+      console.log("Actual: " + v10.angleBetween(v8));
+      </script>
+    </body>
+  </html>
