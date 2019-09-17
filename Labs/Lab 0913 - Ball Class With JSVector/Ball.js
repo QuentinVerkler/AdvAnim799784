@@ -33,12 +33,12 @@ BallClass.prototype.run = function(){
 
 BallClass.prototype.check = function(){
   if(this.loc.x < this.radius || this.loc.x + this.radius > window.innerWidth){
-    this.vel.x = -this.vel.x/(this.vel.x);
-    this.acc.x = -this.acc.x;
+    this.vel.x = -this.vel.x;
+    //this.acc.x = -this.acc.x;
   }
   if(this.loc.y < this.radius || this.loc.y + this.radius > window.innerHeight){
-    this.vel.y = -this.vel.y/(this.vel.y);
-    this.acc.y = -this.acc.y;
+    this.vel.y = -this.vel.y;
+    //this.acc.y = -this.acc.y;
   }
 
 }
