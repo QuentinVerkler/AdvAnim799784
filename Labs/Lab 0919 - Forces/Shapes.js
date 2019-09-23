@@ -9,11 +9,11 @@ function BallClass(x, y, vx, vy, ax, ay, radius){
 
 }
 
-//funtions
+// instance funtions
 BallClass.prototype.render = function(){
   ctx.strokStyle = 'rgb(255,105,180)';
   ctx.lineWidth = '10';
-  ctx.fillStyle = 'rgb(255,105,180)';
+  ctx.fillStyle = 'rgb(94, 235, 52)';
 
   ctx.beginPath()
   ctx.arc(this.loc.x, this.loc.y, this.radius, 2*Math.PI, 0, false);
@@ -21,17 +21,19 @@ BallClass.prototype.render = function(){
   ctx.fill();
 }
 
-BallClass.prototype.applyForce = function(attract, loc){
-  this.acc.setMagnitude(0);
+BallClass.prototype.attract = function(loc, mag){
   var force;
-  if(attract){
-    force = JSVector.subGetNew(loc, this.loc);
-  }
-  else {
-    force = JSVector.subGetNew(this.loc, loc);
-  }
+  force = JSVector.subGetNew(loc, this.loc);
   force.normalize();
-  force.multiply(.5);
+  force.multiply(mag);
+  this.acc.add(force);
+}
+
+BallClass.prototype.repulse = function(loc, mag){
+  var force;
+  force = JSVector.subGetNew(this.loc, loc);
+  force.normalize();
+  force.multiply(mag);
   this.acc.add(force);
 }
 
@@ -45,6 +47,7 @@ BallClass.prototype.run = function(){
   this.update();
   this.render();
   this.check();
+  this.acc.setMagnitude(0);
 }
 
 BallClass.prototype.check = function(){
@@ -59,6 +62,8 @@ BallClass.prototype.check = function(){
 
 }
 
+//+++++++++++++++++++++++++++++++++++++ END OF CLASS
+
 //TriClass: A class to make triangles
 
 //class constructor
@@ -68,13 +73,14 @@ function TriClass(x1, y1, x2, y2, x3, y3, vx, vy, ax, ay){
   this.p3 = new JSVector(x3, y3);
   this.vel = new JSVector(vx, vy);
   this.acc = new JSVector(ax, ay);
+  this.middle = JSVector.addGetNew(this.p1, JSVector.addGetNew(this.p3, this.p2));
 }
 
-//functions
+//instance functions
 TriClass.prototype.render = function(){
   ctx.strokStyle = 'rgb(255,105,180)';
-  ctx.lineWidth = '10';
-  ctx.fillStyle = 'rgb(255,105,180)';
+  ctx.lineWidth = '0';
+  ctx.fillStyle = 'rgb(94, 235, 52)';
 
   ctx.beginPath();
   ctx.moveTo(this.p1.x, this.p1.y);
@@ -95,9 +101,9 @@ TriClass.prototype.run = function(){
   this.update();
   this.render();
   this.check();
+  this.acc.setMagnitude(0);
 }
 
-//not working
 TriClass.prototype.check = function(){
   if(this.p1.x < 0 || this.p1.x > window.innerWidth || this.p2.x < 0 || this.p2.x > window.innerWidth || this.p3.x < 0 || this.p3.x > window.innerWidth){
     this.vel.x = -this.vel.x;
@@ -106,6 +112,22 @@ TriClass.prototype.check = function(){
   if(this.p1.y < 0 || this.p1.y > window.innerHeight || this.p2.y < 0 || this.p2.y > window.innerHeight || this.p3.y < 0 || this.p3.y > window.innerHeight){
     this.vel.y = -this.vel.y;
     //this.acc.y = -this.acc.y;
+  }
+
+  TriClass.prototype.attract = function(tri, mag){
+    var force;
+    force = JSVector.subGetNew(tri.middle, this.middle);
+    force.normalize();
+    force.multiply(mag);
+    this.acc.add(force);
+  }
+
+  TriClass.prototype.repulse = function(tri, mag){
+    var force;
+    force = JSVector.subGetNew(this.middle, tri.middle);
+    force.normalize();
+    force.multiply(mag);
+    this.acc.add(force);
   }
 
 }

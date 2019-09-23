@@ -2,8 +2,8 @@ window.onload = init;
 var cnv;
 var ctx;
 var ball = [];
-var numballs = 25;
-//var tri;
+var numballs = 15;
+var tri;
 var attractor;
 var repulser;
 //var ball;
@@ -15,7 +15,7 @@ function init(){
 	cnv.width = window.innerWidth;
 	cnv.height = window.innerHeight;
 	cnv.style.border = 'solid black 2x';
-	cnv.style.backgroundColor = 'rgba(0,44,55, .5)';
+	cnv.style.backgroundColor = 'rgba(255, 163, 5, .5)';
 	//get context
 	ctx = cnv.getContext('2d');
 
@@ -23,14 +23,15 @@ function init(){
 		ball[a] = new BallClass(Math.random()*window.innerWidth, Math.random()*window.innerHeight, Math.random()*6-3, Math.random()*6-3, 0, 0, Math.random()* 20+10);
 	}
 
-  //tri = new TriClass(Math.random()*window.innerWidth, Math.random()*window.innerHeight, Math.random()*window.innerWidth, Math.random()*window.innerHeight, Math.random()*window.innerWidth, Math.random()*window.innerHeight, Math.random()*6-3, Math.random()*6-3, .05, .05);
-  //ball = new BallClass(Math.random()*window.innerWidth, Math.random()*window.innerHeight, Math.random()*6-3, Math.random()*6-3, 0, 0, Math.random()* 20+10);
-  attractor = new BallClass(500, 500, Math.random()*6-3, Math.random()*6-3, 0, 0, 20);
-  repulser = new BallClass(400, 400, Math.random()*6-3, Math.random()*6-3, 0, 0, 20);
+  //tri = new TriClass(Math.random()*window.innerWidth/6, Math.random()*window.innerHeight/6, Math.random()*window.innerWidth/6, Math.random()*window.innerHeight/6, Math.random()*window.innerWidth/6, Math.random()*window.innerHeight/6, Math.random()*6-3, Math.random()*6-3, 0, 0);
+	tri = new TriClass(100, 100, 200, 100, 150, 200, 0, 0, 0, 0);
+	//ball = new BallClass(Math.random()*window.innerWidth, Math.random()*window.innerHeight, Math.random()*6-3, Math.random()*6-3, 0, 0, Math.random()* 20+10);
+  //attractor = new BallClass(650, 650, 0, 0, 0, 0, 20);
+	//attractor = new TriClass(Math.random()*window.innerWidth/6 + 100, Math.random()*window.innerHeight/6 + 100, Math.random()*window.innerWidth/6 + 100, Math.random()*window.innerHeight/6 + 100, Math.random()*window.innerWidth/6 + 100, Math.random()*window.innerHeight/6 + 100, 0, 0, 0, 0);
+	attractor = new TriClass(100, 100, 200, 200, 100, 200, 0, 0, 0, 0);
+	repulser = new BallClass(300, 300, 0, 0, 0, 0, 20);
   animate();
 }
-
-
 
 function animate(){
 	requestAnimationFrame(animate);
@@ -40,24 +41,26 @@ function animate(){
     ball.applyForce(true, attractor.loc);
   }
   ball.run();
-  */
+
 
   for(let a = 0; a < numballs; a++){
-    /*
-    if(ball[a].loc.distance(attractor.loc) < 300){
-      ball[a].applyForce(true, attractor.loc);
+
+    if(ball[a].loc.distance(attractor.loc) < 200){
+      ball[a].attract(attractor.loc, .2);
     }
-    */
-    if(ball[a].loc.distance(repulser.loc) < 300){
-      ball[a].applyForce(false, repulser.loc);
+		else if(ball[a].loc.distance(repulser.loc) < 200){
+      ball[a].repulse(repulser.loc, .25);
     }
-    else{
-      ball[a].acc.setMagnitude(0);
-    }
+
     ball[a].run();
 	}
   repulser.run();
   attractor.run();
-  //tri.run();
+	*/
+	if(tri.middle.distance(attractor.middle) < 400){
+		tri.attract(attractor, .3);
+	}
+  tri.run();
+	attractor.run();
 
 }
