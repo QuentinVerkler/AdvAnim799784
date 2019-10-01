@@ -1,17 +1,16 @@
 //BallClass: A class to make balls
 
 //class constructor
-function BallClass(x, y, vx, vy, ax, ay, radius, numOrbiters, hunter, range, place, numballs){
+function BallClass(x, y, vx, vy, ax, ay, radius, numOrbiters){
   this.loc = new JSVector(x, y);
   this.vel = new JSVector(vx, vy);
   this.acc = new JSVector(ax, ay);
   this.radius = radius;
   this.orbiter = [];
-  this.hunter = hunter;
-  this.range = range;
   for(let a = 0; a < numOrbiters; a++){
-    this.orbiter[a] = new Orbiter(10, (2*Math.PI/numOrbiters) * a, .03, 0, 0, 120, this.loc, 1, 240, radius, place, hunter, range, numballs);
+    this.orbiter[a] = new Orbiter(10, (2*Math.PI/numOrbiters) * a, .03, 0, 0, 120, this.loc, 1, 240, radius);
   }
+
 }
 
 // instance funtions
@@ -66,6 +65,7 @@ BallClass.prototype.check = function(){
   if(this.loc.y < this.radius || this.loc.y + this.radius > window.innerHeight){
     this.vel.y = -this.vel.y;
   }
+
 }
 
 //+++++++++++++++END CLASS+++++++++++++++++++++++++++++++++++++++++
