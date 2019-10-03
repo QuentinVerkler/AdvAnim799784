@@ -10,7 +10,7 @@ function Orbiter(radius, angle, angleV, x, y, orbitRadius, ballLoc, deltaR, max,
   this.ballLoc = ballLoc;
   this.deltaR = deltaR;
   this.max = max;
-  this.min = min;
+  this.planetRadius = min;
   this.place = place;
   this.hunter = hunter;
   this.range = range;
@@ -42,11 +42,12 @@ Orbiter.prototype.retract = function(length){
   this.orbitRadius -= length;
 }
 
-Orbiter.prototype.hunt = function(ball){
-  this.orbitRadius = this.loc.distance(ball.loc);
-  this.orbitRadius = this.min;
-  ball.loc.x = this.loc.x + this.radius;
-  ball.loc.y = this.loc.y + this.radius;
+Orbiter.prototype.return = function(){
+  this.orbitRadius = this.planetRadius;
+}
+
+Orbiter.prototype.hunt = function(ball, distance){
+  this.orbitRadius = distance;
 }
 
 Orbiter.prototype.update = function(){
@@ -54,12 +55,16 @@ Orbiter.prototype.update = function(){
     this.loc.x = this.ballLoc.x + this.orbitRadius*Math.cos(this.angle);
     this.loc.y = this.ballLoc.y + this.orbitRadius*Math.sin(this.angle);
     this.angle += this.angleV;
+    /*
     for(let a = 0; a < numballs; a++){
-      if(!ball[a].hunter && ball[this.place].loc.distance(ball[a].loc) < this.range && this.balNum != a){
-        this.hunt(ball[a]);
+      if(this.hunter === true && ball[a].hunter === false && ball[this.place].loc.distance(ball[a].loc) < this.range && this.balNum != a){
+        this.hunt(ball[a], this.loc.distance(ball[a].loc) + ball[a].radius + this.radius);
         a = numballs;
+      }else{
+        this.orbitRadius = this.planetRadius;
       }
     }
+    */
 }
 
 Orbiter.prototype.check = function(){

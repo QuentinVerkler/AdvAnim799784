@@ -20,9 +20,9 @@ function init(){
 	ctx = cnv.getContext('2d');
 
   for(let a = 0; a < numballs; a++){
-		var hunter;
+		var hunter = false;
 		if(a % 2 === 0){hunter = true}
-		ball[a] = new BallClass(Math.random()*window.innerWidth, Math.random()*window.innerHeight, Math.random()*6-3, Math.random()*6-3, 0, 0, Math.random()* 20+10, orbiters, 300, a, numballs);
+		ball[a] = new BallClass(Math.random()*window.innerWidth, Math.random()*window.innerHeight, Math.random()*6-3, Math.random()*6-3, 0, 0, Math.random()* 20+10, orbiters, hunter, 200, a, numballs);
 	}
 
   //ball = new BallClass(Math.random()*window.innerWidth, Math.random()*window.innerHeight, Math.random()*6-3, Math.random()*6-3, 0, 0, Math.random()* 20+20, 8);

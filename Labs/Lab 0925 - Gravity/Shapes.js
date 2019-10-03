@@ -10,15 +10,21 @@ function BallClass(x, y, vx, vy, ax, ay, radius, numOrbiters, hunter, range, pla
   this.hunter = hunter;
   this.range = range;
   for(let a = 0; a < numOrbiters; a++){
-    this.orbiter[a] = new Orbiter(10, (2*Math.PI/numOrbiters) * a, .03, 0, 0, 120, this.loc, 1, 240, radius, place, hunter, range, numballs);
+    this.orbiter[a] = new Orbiter(5, (2*Math.PI/numOrbiters) * a, .03, 0, 0, 120, this.loc, 1, 240, radius, place, hunter, range, numballs);
   }
 }
 
 // instance funtions
 BallClass.prototype.render = function(){
-  ctx.strokStyle = 'rgb(255,105,180)';
-  ctx.lineWidth = '10';
-  ctx.fillStyle = 'rgb(94, 235, 52)';
+  if(this.hunter === true){
+    //hunters are green
+    ctx.strokStyle = 'rgb(255,105,180)';
+    ctx.lineWidth = '10';
+    ctx.fillStyle = 'rgb(94, 235, 52)';
+  }else{
+    ctx.strokStyle = 'rgb(255, 204, 204)';
+    ctx.fillStyle = 'rgb(255, 204, 204)';
+  }
 
   ctx.beginPath()
   ctx.arc(this.loc.x, this.loc.y, this.radius, 2*Math.PI, 0, false);
@@ -42,6 +48,21 @@ BallClass.prototype.repulse = function(loc, mag){
   this.acc.add(force);
 }
 
+BallClass.prototype.hunt = function(){
+  for(let a = 0; a < numballs; a++){
+    if(ball[a].hunter === false && this.loc.distance(ball[a].loc) < this.range && this.balNum != a){
+      for(let b = 0; b < this.orbiters; b++){
+        this.orbiters[b].hunt(ball[a], this.loc.distance(ball[a].loc) - this.radius - ball[a].radius + this.orbiters[b].radius);
+        a = numballs;
+      }
+    }else{
+      for(let b = 0; b < this.orbiters; b++){
+        this.orbiters[b].return();
+      }
+    }
+  }
+}
+
 BallClass.prototype.update = function(){
   this.vel.add(this.acc);
   this.vel.limit(15);
@@ -52,6 +73,9 @@ BallClass.prototype.run = function(){
   this.update();
   this.render();
   this.check();
+  if(this.hunter === true){
+    this.hunt();
+  }
   for(let a = 0; a < this.orbiter.length; a++){
     this.orbiter[a].update();
     this.orbiter[a].render();
