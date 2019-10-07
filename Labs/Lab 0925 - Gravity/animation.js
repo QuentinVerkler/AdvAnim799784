@@ -3,7 +3,7 @@ var cnv;
 var ctx;
 var ball = [];
 var numballs = 4;
-var orbiters = 4;
+var orbiters = 8;
 var attractor;
 var repulser;
 //var ball;

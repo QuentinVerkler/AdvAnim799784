@@ -9,8 +9,10 @@ function BallClass(x, y, vx, vy, ax, ay, radius, numOrbiters, hunter, range, pla
   this.orbiter = [];
   this.hunter = hunter;
   this.range = range;
+  this.numballs = numballs;
+  this.place = place;
   for(let a = 0; a < numOrbiters; a++){
-    this.orbiter[a] = new Orbiter(5, (2*Math.PI/numOrbiters) * a, .03, 0, 0, 120, this.loc, 1, 240, radius, place, hunter, range, numballs);
+    this.orbiter[a] = new Orbiter(5, (2*Math.PI/numOrbiters) * a, .03, 120, this.loc, 1, 240, radius, place, hunter, range, numballs);
   }
 }
 
@@ -19,7 +21,6 @@ BallClass.prototype.render = function(){
   if(this.hunter === true){
     //hunters are green
     ctx.strokStyle = 'rgb(255,105,180)';
-    ctx.lineWidth = '10';
     ctx.fillStyle = 'rgb(94, 235, 52)';
   }else{
     ctx.strokStyle = 'rgb(255, 204, 204)';
@@ -48,36 +49,42 @@ BallClass.prototype.repulse = function(loc, mag){
   this.acc.add(force);
 }
 
-BallClass.prototype.hunt = function(){
-  for(let a = 0; a < numballs; a++){
-    if(ball[a].hunter === false && this.loc.distance(ball[a].loc) < this.range && this.balNum != a){
-      for(let b = 0; b < this.orbiters; b++){
-        this.orbiters[b].hunt(ball[a], this.loc.distance(ball[a].loc) - this.radius - ball[a].radius + this.orbiters[b].radius);
-        a = numballs;
-      }
-    }else{
-      for(let b = 0; b < this.orbiters; b++){
-        this.orbiters[b].return();
-      }
-    }
-  }
-}
-
 BallClass.prototype.update = function(){
   this.vel.add(this.acc);
   this.vel.limit(15);
   this.loc.add(this.vel);
 }
 
+BallClass.prototype.hunt = function(loc, mag){
+  var speed;
+  speed = JSVector.subGetNew(loc, this.loc);
+  speed.normalize();
+  speed.multiply(mag);
+  this.vel.add(speed);
+}
+
 BallClass.prototype.run = function(){
   this.update();
   this.render();
   this.check();
-  if(this.hunter === true){
-    this.hunt();
-  }
   for(let a = 0; a < this.orbiter.length; a++){
     this.orbiter[a].update();
+    if(this.hunter === true){
+      for(let b = 0; b < this.numballs; b++){
+        if(ball[b].hunter === false && this.loc.distance(ball[b].loc) < this.range && this.place != b){
+          this.orbiter[a].hunt(ball[b], this.loc.distance(ball[b].loc) - this.radius - ball[b].radius + this.orbiter[a].radius);
+          if(this.loc.distance(ball[b].loc) > this.radius + ball[b].radius){
+            ball[b].hunt(this.loc, .1);
+          }else{
+            ball[b].vel = this.vel;
+            ball[b].acc = this.acc;
+          }
+          b = this.numballs;
+        }else{
+          this.orbiter[a].return(ball[b]);
+        }
+      }
+    }
     this.orbiter[a].render();
   }
   this.acc.setMagnitude(0);

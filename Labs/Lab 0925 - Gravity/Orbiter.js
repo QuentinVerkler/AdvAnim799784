@@ -1,11 +1,12 @@
 //Orbiter: a class that makes orbiter objects
 
 //class constructor
-function Orbiter(radius, angle, angleV, x, y, orbitRadius, ballLoc, deltaR, max, min, place, hunter, range, numballs){
+function Orbiter(radius, angle, angleV, orbitRadius, ballLoc, deltaR, max, min, place, hunter, range, numballs){
   this.radius = radius;
   this.angle = angle;
   this.angleV = angleV;
-  this.loc = new JSVector(x, y);
+  this.oGAngleV = angleV;
+  this.loc = new JSVector(0, 0);
   this.orbitRadius = min;
   this.ballLoc = ballLoc;
   this.deltaR = deltaR;
@@ -42,12 +43,27 @@ Orbiter.prototype.retract = function(length){
   this.orbitRadius -= length;
 }
 
-Orbiter.prototype.return = function(){
-  this.orbitRadius = this.planetRadius;
+Orbiter.prototype.return = function(thisBall){
+  this.angleV = this.oGAngleV;
+  if(this.orbitRadius > this.planetRadius + this.radius){
+    this.orbitRadius -= thisBall.vel.getMagnitude();
+  }
 }
 
-Orbiter.prototype.hunt = function(ball, distance){
-  this.orbitRadius = distance;
+Orbiter.prototype.hunt = function(thisBall, distance){
+  this.angleV = 0;
+  while(this.orbitRadius < distance){
+    this.orbitRadius += 1;
+  }
+/*
+  if(thisBall.loc.distance(ball[this.place].loc) - ball[this.place].radius - thisBall.radius + this.radius > 0){
+    this.return();
+    thisBall.loc = this.loc.copy();
+    thisBall.vel = ball[this.place].vel;
+    thisBall.acc = ball[this.place].acc;
+  }
+  */
+
 }
 
 Orbiter.prototype.update = function(){
@@ -55,16 +71,6 @@ Orbiter.prototype.update = function(){
     this.loc.x = this.ballLoc.x + this.orbitRadius*Math.cos(this.angle);
     this.loc.y = this.ballLoc.y + this.orbitRadius*Math.sin(this.angle);
     this.angle += this.angleV;
-    /*
-    for(let a = 0; a < numballs; a++){
-      if(this.hunter === true && ball[a].hunter === false && ball[this.place].loc.distance(ball[a].loc) < this.range && this.balNum != a){
-        this.hunt(ball[a], this.loc.distance(ball[a].loc) + ball[a].radius + this.radius);
-        a = numballs;
-      }else{
-        this.orbitRadius = this.planetRadius;
-      }
-    }
-    */
 }
 
 Orbiter.prototype.check = function(){
