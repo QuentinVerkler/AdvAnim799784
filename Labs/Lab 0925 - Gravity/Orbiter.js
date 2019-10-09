@@ -51,7 +51,7 @@ Orbiter.prototype.return = function(thisBall){
 }
 
 Orbiter.prototype.hunt = function(thisBall, distance){
-  this.angleV = 0;
+  //this.angleV = 0;
   while(this.orbitRadius < distance){
     this.orbitRadius += 1;
   }

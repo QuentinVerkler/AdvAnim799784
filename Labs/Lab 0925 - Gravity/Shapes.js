@@ -60,7 +60,7 @@ BallClass.prototype.hunt = function(loc, mag){
   speed = JSVector.subGetNew(loc, this.loc);
   speed.normalize();
   speed.multiply(mag);
-  this.vel.add(speed);
+  this.loc.add(speed);
 }
 
 BallClass.prototype.run = function(){
@@ -74,7 +74,7 @@ BallClass.prototype.run = function(){
         if(ball[b].hunter === false && this.loc.distance(ball[b].loc) < this.range && this.place != b){
           this.orbiter[a].hunt(ball[b], this.loc.distance(ball[b].loc) - this.radius - ball[b].radius + this.orbiter[a].radius);
           if(this.loc.distance(ball[b].loc) > this.radius + ball[b].radius){
-            ball[b].hunt(this.loc, .1);
+            ball[b].hunt(this.loc, .5);
           }else{
             ball[b].vel = this.vel;
             ball[b].acc = this.acc;

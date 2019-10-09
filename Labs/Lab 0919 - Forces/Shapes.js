@@ -62,7 +62,7 @@ BallClass.prototype.check = function(){
 
 }
 
-//+++++++++++++++++++++++++++++++++++++ END OF CLASS
+//+++++++++++++++++++++++++++++++++++++ END OF CLASS +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 //TriClass: A class to make triangles
 
