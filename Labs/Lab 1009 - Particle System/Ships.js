@@ -15,15 +15,18 @@ ShipClass.prototype.render = function(){
 
   ctx.save();
 
+  ctx.translate(this.loc.x, this.loc.y);
+  ctx.rotate(this.vel.getDirection() - Math.PI/2);
+
   ctx.beginPath();
-  ctx.moveTo(this.loc.x - 9, this.loc.y - 12);
-  ctx.lineTo(this.loc.x, this.loc.y + 15);
-  ctx.moveTo(this.loc.x, this.loc.y + 15);
-  ctx.lineTo(this.loc.x + 9, this.loc.y - 12);
-  ctx.moveTo(this.loc.x, this.loc.y - 6);
-  ctx.lineTo(this.loc.x - 9, this.loc.y - 12);
-  ctx.moveTo(this.loc.x, this.loc.y - 6);
-  ctx.lineTo(this.loc.x + 9, this.loc.y - 12);
+  ctx.moveTo(-9, -12);
+  ctx.lineTo(0, 15);
+  ctx.moveTo(0, 15);
+  ctx.lineTo(9, -12);
+  ctx.moveTo(0, -6);
+  ctx.lineTo(-9, -12);
+  ctx.moveTo(0, -6);
+  ctx.lineTo(9, -12);
   ctx.closePath();
   ctx.stroke();
   ctx.fill();
@@ -35,7 +38,7 @@ ShipClass.prototype.update = function(){
   this.vel.add(this.acc);
   this.vel.limit(15);
   this.loc.add(this.vel);
-  this.life -= 5;
+  this.life -= 2;
 }
 
 ShipClass.prototype.check = function(){

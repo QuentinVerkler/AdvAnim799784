@@ -2,6 +2,8 @@ window.onload = init;
 var cnv;
 var ctx;
 var ship;
+var ps = [];
+
 
 function init(){
 	//get canvas
@@ -14,8 +16,9 @@ function init(){
 	//get context
 	ctx = cnv.getContext('2d');
 
-	ship = new ShipClass(200, 200, 0, 0, 0, 0);
-
+	//ps = new ParticleSystem(300, 300, 0, 0, 0, 0, 15)
+	//ship = new ShipClass(200, 200, -5, 6, 0, 0, 255);
+	cnv.addEventListener("click", makeNewSystem);
   animate();
 }
 
@@ -23,5 +26,15 @@ function animate(){
 	requestAnimationFrame(animate);
 	ctx.clearRect(0,0,window.innerWidth, window.innerHeight);
 
-	ship.run();
+	//ship.run();
+	for(let a = 0; a < ps.length; a++){
+		ps[a].run();
+	}
+
+}
+
+function makeNewSystem(e){
+		var x = e.offsetX;
+		var y = e.offsetY;
+		ps.push(new ParticleSystem(x, y, 0, 0, 0, 0, 15));
 }

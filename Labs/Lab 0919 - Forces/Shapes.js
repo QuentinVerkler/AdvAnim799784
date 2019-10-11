@@ -15,7 +15,7 @@ BallClass.prototype.render = function(){
   ctx.lineWidth = '10';
   ctx.fillStyle = 'rgb(94, 235, 52)';
 
-  ctx.beginPath()
+  ctx.beginPath();
   ctx.arc(this.loc.x, this.loc.y, this.radius, 2*Math.PI, 0, false);
   ctx.stroke();
   ctx.fill();
