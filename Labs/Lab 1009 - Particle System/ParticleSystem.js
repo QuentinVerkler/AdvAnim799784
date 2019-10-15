@@ -39,7 +39,7 @@ ParticleSystem.prototype.run = function(){
   this.update();
   this.render();
   this.check();
-  this.particles.push(new ShipClass(this.loc.x, this.loc.y, Math.random()*6 - 3, this.vel.y - Math.random()*7, 0, .05, 255));
+  this.particles.push(new ShipClass(this.loc.x, this.loc.y, Math.random()*6 - 3, this.vel.y - Math.random()*3 - 2, 0, .05, 255));
   for(let a = this.particles.length - 1; a >= 0; a--){
     if(this.particles[a].isDead()){
       this.particles.splice(a, 1);

@@ -21,17 +21,18 @@ ShipClass.prototype.render = function(){
   ctx.beginPath();
   ctx.moveTo(-9, -12);
   ctx.lineTo(0, 15);
-  ctx.moveTo(0, 15);
+
   ctx.lineTo(9, -12);
-  ctx.moveTo(0, -6);
+
+
+  ctx.lineTo(0, -3);
   ctx.lineTo(-9, -12);
-  ctx.moveTo(0, -6);
-  ctx.lineTo(9, -12);
   ctx.closePath();
   ctx.stroke();
   ctx.fill();
 
   ctx.restore();
+
 }
 
 ShipClass.prototype.update = function(){

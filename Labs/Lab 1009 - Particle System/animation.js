@@ -17,7 +17,7 @@ function init(){
 	ctx = cnv.getContext('2d');
 
 	//ps = new ParticleSystem(300, 300, 0, 0, 0, 0, 15)
-	//ship = new ShipClass(200, 200, -5, 6, 0, 0, 255);
+	//ship = new ShipClass(200, 200, 0, 0, 0, 0, 255);
 	cnv.addEventListener("click", makeNewSystem);
   animate();
 }
@@ -36,5 +36,5 @@ function animate(){
 function makeNewSystem(e){
 		var x = e.offsetX;
 		var y = e.offsetY;
-		ps.push(new ParticleSystem(x, y, 0, 0, 0, 0, 15));
+		ps.push(new ParticleSystem(x, y, 0, 0, 0, 0, 10));
 }
