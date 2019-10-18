@@ -21,8 +21,11 @@ function init(){
 
   for(let a = 0; a < numballs; a++){
 		var hunter = false;
-		if(a % 2 === 0){hunter = true}
-		ball[a] = new BallClass(Math.random()*window.innerWidth, Math.random()*window.innerHeight, Math.random()*6-3, Math.random()*6-3, 0, 0, Math.random()* 20+10, orbiters, hunter, 200, a, numballs);
+		if(a % 2 === 0){
+			ball[a] = new BallClass(Math.random()*window.innerWidth, Math.random()*window.innerHeight, Math.random()*6-3, Math.random()*6-3, 0, 0, Math.random()* 20+10, orbiters, hunter, 200, a, numballs);
+		}else{
+			ball[a] = new PreyClass(Math.random()*window.innerWidth, Math.random()*window.innerHeight, Math.random()*6-3, Math.random()*6-3, 0, 0, Math.random()* 10+5, orbiters, a, numballs);
+		}
 	}
 
   //ball = new BallClass(Math.random()*window.innerWidth, Math.random()*window.innerHeight, Math.random()*6-3, Math.random()*6-3, 0, 0, Math.random()* 20+20, 8);
