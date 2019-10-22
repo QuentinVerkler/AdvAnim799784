@@ -1,7 +1,7 @@
 //BallClass: A class to make balls
 
 //class constructor
-function BallClass(x, y, vx, vy, ax, ay, radius, numOrbiters, hunter, range, place, numballs){
+function BallClass(x, y, vx, vy, ax, ay, radius, numOrbiters, range, place, numPrey){
   this.loc = new JSVector(x, y);
   this.vel = new JSVector(vx, vy);
   this.acc = new JSVector(ax, ay);
@@ -9,19 +9,19 @@ function BallClass(x, y, vx, vy, ax, ay, radius, numOrbiters, hunter, range, pla
   this.orbiter = [];
   this.hunter = true;
   this.range = range;
-  this.numballs = numballs;
+  this.numPrey = numPrey;
   this.place = place;
   this.isHunting = false;
   for(let a = 0; a < numOrbiters; a++){
-    this.orbiter[a] = new Orbiter(5, (2*Math.PI/numOrbiters) * a, .03, 120, this.loc, 1, 240, radius, place, hunter, range, numballs);
+    this.orbiter[a] = new Orbiter(4, (2*Math.PI/numOrbiters) * a, .03, 120, this.loc, 1, 240, radius, place, true, range, numPrey);
   }
 }
 
 // instance funtions
 BallClass.prototype.render = function(){
-    //hunters are green
-    ctx.strokStyle = 'rgb(255,105,180)';
-    ctx.fillStyle = 'rgb(94, 235, 52)';
+  //hunters are green
+  ctx.strokStyle = 'rgb(255,105,180)';
+  ctx.fillStyle = 'rgb(94, 235, 52)';
 
   ctx.beginPath()
   ctx.arc(this.loc.x, this.loc.y, this.radius, 2*Math.PI, 0, false);

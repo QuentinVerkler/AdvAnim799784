@@ -15,9 +15,10 @@ function Orbiter(radius, angle, angleV, orbitRadius, ballLoc, deltaR, max, min, 
   this.place = place;
   this.hunter = hunter;
   this.range = range;
-  this.numballs = numballs;
+  this.numPrey = numballs;
   this.ballHunting = -1;
   this.isHunting = false;
+  this.eatTime = 30;
 }
 
 //instance functions
@@ -68,23 +69,34 @@ Orbiter.prototype.update = function(){
     this.loc.x = this.ballLoc.x + this.orbitRadius*Math.cos(this.angle);
     this.loc.y = this.ballLoc.y + this.orbitRadius*Math.sin(this.angle);
     this.angle += this.angleV;
-    for(let b = 0; b < this.numballs; b++){
-      if(ball[b].hunter === false && (ball[b].isHunted === false || b === this.ballHunting) && ball[this.place].isHunting === false && this.loc.distance(ball[b].loc) < this.range && this.place != b){
+    for(let b = this.numPrey - 1; b >= 0; b--){
+      var hunted = prey[b];
+      //section to look for prey. If one is in range, will hunt
+      if((prey[b].isHunted === false || b === this.ballHunting) && ball[this.place].isHunting === false && this.loc.distance(prey[b].loc) < this.range && this.place != b){
         ball[this.place].isHunting = true;
         ball[this.place].stopRotation();
         this.ballHunting = b;
-        ball[b].isHunted = true;
-        this.hunt(ball[b], this.loc.distance(ball[b].loc));
-        if(this.loc.distance(ball[b].loc) > this.radius + ball[b].radius){
-          ball[b].loc = this.loc;
-          this.return1();
+        prey[b].isHunted = true;
+        this.hunt(prey[b], this.loc.distance(prey[b].loc));
+        //while the prey is still too far away, it will continue to return
+        if(this.orbitRadius === this.planetRadius + this.radius){
+          //this makes it take time to be eaten
+          this.eatTime -= 1;
+          if(this.eatTime <= 0){
+            prey[b].isDead = true;
+          }else{
+            prey[b].vel = ball[this.place].vel;
+            prey[b].acc = ball[this.place].acc;
+          }
+        //once the prey is in range, it will stop returning
         }else{
-          ball[b].vel = ball[this.place].vel;
-          ball[b].acc = ball[this.place].acc;
+          prey[b].loc = this.loc;
+          this.return1();
         }
-        b = this.numballs;
+        break;
       }else{
-        this.return(ball[b]);
+        this.eatTime = 30;
+        this.return(prey[b]);
         ball[this.place].startRotation();
       }
     }

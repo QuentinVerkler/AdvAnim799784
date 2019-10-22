@@ -1,27 +1,18 @@
 
 
-function PreyClass(x, y, vx, vy, ax, ay, radius, numOrbiters, place, numballs){
+function PreyClass(x, y, vx, vy, ax, ay, place, numballs){
   this.loc = new JSVector(x, y);
   this.vel = new JSVector(vx, vy);
   this.acc = new JSVector(ax, ay);
-  this.radius = radius;
-  this.orbiter = [];
   this.numballs = numballs;
   this.place = place;
   this.isHunted = false;
   this.hunter = false;
-
+  this.isDead = false;
 }
 
 //animate fucntions
 PreyClass.prototype.render = function(){
-  //   ctx.strokStyle = 'rgb(255, 204, 204)';
-  //   ctx.fillStyle = 'rgb(255, 204, 204)';
-  //
-  // ctx.beginPath()
-  // ctx.arc(this.loc.x, this.loc.y, this.radius, 2*Math.PI, 0, false);
-  // ctx.stroke();
-  // ctx.fill();
   ctx.strokeStyle = 'rgb(136, 3, 252)';
   ctx.fillStyle = 'rgb(3, 232, 252)';
 
@@ -52,21 +43,21 @@ PreyClass.prototype.update = function(){
   this.loc.add(this.vel);
 }
 
+PreyClass.prototype.check = function(){
+  if(this.loc.x < 12 || this.loc.x + 12 > window.innerWidth){
+    this.vel.x = -this.vel.x;
+  }
+  if(this.loc.y < 12 || this.loc.y + 12 > window.innerHeight){
+    this.vel.y = -this.vel.y;
+  }
+}
+
 PreyClass.prototype.run = function(){
   this.update();
   this.render();
   this.check();
 
   this.acc.setMagnitude(0);
-}
-
-PreyClass.prototype.check = function(){
-  if(this.loc.x < this.radius || this.loc.x + this.radius > window.innerWidth){
-    this.vel.x = -this.vel.x;
-  }
-  if(this.loc.y < this.radius || this.loc.y + this.radius > window.innerHeight){
-    this.vel.y = -this.vel.y;
-  }
 }
 
 //other functions

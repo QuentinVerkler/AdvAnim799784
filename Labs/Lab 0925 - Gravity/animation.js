@@ -2,8 +2,10 @@ window.onload = init;
 var cnv;
 var ctx;
 var ball = [];
+var prey = [];
 var numballs = 4;
 var orbiters = 8;
+var numPrey = 20;
 var attractor;
 var repulser;
 //var ball;
@@ -20,13 +22,12 @@ function init(){
 	ctx = cnv.getContext('2d');
 
   for(let a = 0; a < numballs; a++){
-		var hunter = false;
-		if(a % 2 === 0){
-			ball[a] = new BallClass(Math.random()*window.innerWidth, Math.random()*window.innerHeight, Math.random()*6-3, Math.random()*6-3, 0, 0, Math.random()* 20+10, orbiters, hunter, 200, a, numballs);
-		}else{
-			ball[a] = new PreyClass(Math.random()*window.innerWidth, Math.random()*window.innerHeight, Math.random()*6-3, Math.random()*6-3, 0, 0, Math.random()* 10+5, orbiters, a, numballs);
+			ball[a] = new BallClass(Math.random()*window.innerWidth, Math.random()*window.innerHeight, Math.random()*6-3, Math.random()*6-3, 0, 0, Math.random()* 20+15, orbiters, 200, a, numPrey);
 		}
-	}
+
+	for(let a = 0; a < numPrey; a++){
+			prey[a] = new PreyClass(Math.random()*window.innerWidth, Math.random()*window.innerHeight, Math.random()*6-3, Math.random()*6-3, 0, 0, a, numballs);
+		}
 
   //ball = new BallClass(Math.random()*window.innerWidth, Math.random()*window.innerHeight, Math.random()*6-3, Math.random()*6-3, 0, 0, Math.random()* 20+20, 8);
   animate();
@@ -39,6 +40,14 @@ function animate(){
 
   for(let a = 0; a < numballs; a++){
     ball[a].run();
+	}
+
+	for(let a = 0; a < numPrey; a++){
+		if(prey[a].isDead === true){
+			prey.splice(a, 1);
+		}else{
+			prey[a].run();
+		}
 	}
 
 }
