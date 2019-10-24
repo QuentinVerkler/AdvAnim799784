@@ -9,7 +9,7 @@ function PreyClass(x, y, vx, vy, ax, ay, place, numballs){
   this.isHunted = false;
   this.hunter = false;
   this.isDead = false;
-  this.eatTime = 30;
+  this.lifeSpan = 500;
 }
 
 //animate fucntions

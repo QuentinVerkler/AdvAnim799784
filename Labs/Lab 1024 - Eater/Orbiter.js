@@ -72,45 +72,46 @@ Orbiter.prototype.update = function(){
     for(let b = this.numPrey - 1; b >= 0; b--){
       //var hunted = prey[b];
       //section to look for prey. If one is in range, will hunt
-      if((prey[b].isHunted === false || b === this.ballHunting) && ball[this.place].isHunting === false && this.loc.distance(prey[b].loc) < this.range && this.place != b){
-        ball[this.place].isHunting = true;
-        ball[this.place].stopRotation();
-        this.ballHunting = b;
-        prey[b].isHunted = true;
-        this.hunt(prey[b], this.loc.distance(prey[b].loc));
-        prey[b].lifeSpan -= 1;
-        //while the prey is still too far away, it will continue to return
-        if(this.orbitRadius === this.planetRadius + this.radius){
+      if(((prey[b].isHunted === false) || (b === this.ballHunting)) && ball[this.place].loc.distance(prey[b].loc) < this.range){
+        if(ball[this.place].isHunting === false){
+          ball[this.place].isHunting = true;
+          ball[this.place].stopRotation();
+          this.ballHunting = b;
+          prey[b].isHunted = true;
+          prey[b].lifeSpan -= 1;
+          this.hunt(prey[b], this.loc.distance(prey[b].loc));
+          //while the prey is still too far away, it will continue to return
+          if(this.orbitRadius <= this.planetRadius + this.radius){
+            prey[b].lifeSpan -= 1;
+            //this makes it take time to be eaten
+            if(prey[b].lifeSpan <= 0){
+              prey[b].isDead = true;
+            }else{
+              prey[b].vel = ball[this.place].vel;
+              prey[b].acc = ball[this.place].acc;
+            }
+          //once the prey is in range, it will stop returning
+          }else{
+            prey[b].loc = this.loc;
+            this.return1();
+          }
+          break;
+        }else{
+          prey[b].lifeSpan -= 1;
           //this makes it take time to be eaten
           if(prey[b].lifeSpan <= 0){
             prey[b].isDead = true;
-          }else{
-            prey[b].vel = ball[this.place].vel;
-            prey[b].acc = ball[this.place].acc;
           }
-        //once the prey is in range, it will stop returning
-        }else{
-          prey[b].loc = this.loc;
-          this.return1();
         }
-        if(prey[b].lifeSpan <= 0){
-          prey[b].isDead = true;
-        }
-        break;
+
       }else{
         this.return(prey[b]);
         ball[this.place].startRotation();
       }
+
     }
-
-
   }
 
-Orbiter.prototype.check = function(){
-  if(this.orbitRadius > this.max || this.min > this.orbitRadius){
-    this.deltaR = this.deltaR * -1;
-  }
-}
 
 Orbiter.prototype.huntReturn = function(loc, mag){
   var speed;

@@ -42,12 +42,14 @@ function animate(){
     ball[a].run();
 	}
 
-	for(let a = 0; a < numPrey; a++){
-		if(prey[a].isDead === true){
-			prey.splice(a, 1);
-		}else{
-			prey[a].run();
-		}
+	for(let a = 0; a < prey.length; a++){
+			if (prey[a] === null) {
+
+			}else if(prey[a].isDead){
+				prey.splice(a, 1);
+			}else{
+				prey[a].run();
+			}
 	}
 
 }
