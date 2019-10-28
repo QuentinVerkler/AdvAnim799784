@@ -5,20 +5,17 @@ function Orbiter(radius, angle, angleV, orbitRadius, ballLoc, deltaR, max, min, 
   this.radius = radius;
   this.angle = angle;
   this.angleV = angleV;
-  this.oGAngleV = angleV;
   this.loc = new JSVector(0, 0);
   this.orbitRadius = min;
   this.ballLoc = ballLoc;
-  this.deltaR = deltaR;
   this.max = max;
   this.planetRadius = min;
+  //this is the place of the ball in its array
   this.place = place;
-  this.hunter = hunter;
   this.range = range;
   this.numPrey = numballs;
   this.ballHunting = null;
   this.isHunting = false;
-  this.eatTime = 30;
 
 }
 
@@ -39,16 +36,8 @@ Orbiter.prototype.render = function(){
   ctx.closePath();
 }
 
-Orbiter.prototype.extend = function(length){
-  this.orbiRadius += length;
-}
-
-Orbiter.prototype.retract = function(length){
-  this.orbitRadius -= length;
-}
-
+//
 Orbiter.prototype.return = function(thisPrey){
-  // this.angleV = this.oGAngleV;
   if(this.orbitRadius > this.planetRadius + this.radius){
     this.orbitRadius -= thisPrey.vel.getMagnitude();
   }
@@ -59,6 +48,7 @@ Orbiter.prototype.return1 = function(){
   this.orbitRadius -= 1;
 }
 
+//this goes out to the ball
 Orbiter.prototype.hunt = function(thisPrey, distance){
   //this.angleV = 0;
   while(this.orbitRadius < distance){
@@ -71,9 +61,9 @@ Orbiter.prototype.update = function(){
     this.loc.x = this.ballLoc.x + this.orbitRadius*Math.cos(this.angle);
     this.loc.y = this.ballLoc.y + this.orbitRadius*Math.sin(this.angle);
     this.angle += this.angleV;
-    for(let b = prey.length - 1; b >= 0; b--){
-      //if the ball isn't hunting, it will look for a ball
-      if(ball[this.place].preyHunting === null){
+    //if the ball isn't hunting, it will look for a prey
+    if(ball[this.place].preyHunting === null){
+      for(let b = prey.length - 1; b >= 0; b--){
         if(((prey[b].isHunted === false)) && ball[this.place].loc.distance(prey[b].loc) < this.range && ball[this.place].isHunting === false){
 
           ball[this.place].preyHunting = prey[b];
@@ -88,40 +78,38 @@ Orbiter.prototype.update = function(){
       }
 
     }
+    //here the ball should only hunt if the previous statement gave it a target
     if(ball[this.place].preyHunting != null && ball[this.place].loc.distance(ball[this.place].preyHunting.loc) < this.range && this.isHunting){
       this.hunt(ball[this.place].preyHunting, this.loc.distance(ball[this.place].preyHunting.loc));
-      //while the prey is still too far away, it will continue to return
+      //when the prey is in range, it will start eating it
       if(this.orbitRadius <= this.planetRadius + this.radius){
         ball[this.place].preyHunting.lifeSpan -= 1;
         //this makes it take time to be eaten
         if(ball[this.place].preyHunting.lifeSpan <= 0){
           ball[this.place].preyHunting.isDead = true;
+          ball[this.place].wasSpliced = true;
         }else{
+        //this makes the prey stay with the ball
           ball[this.place].preyHunting.vel = ball[this.place].vel;
           ball[this.place].preyHunting.acc = ball[this.place].acc;
         }
-        //once the prey is in range, it will stop returning
+      //else, it will continue bringing the prey back.
       }else{
         this.return1();
         ball[this.place].preyHunting.loc = this.loc;
-        ball[this.place].preyHunting.lifeSpan -= 1;
-        //this makes it take time to be eaten
-        if(ball[this.place].preyHunting.lifeSpan <= 0){
-          ball[this.place].preyHunting.isDead = true;
-          ball[this.place].wasSpliced = true;
-        }
       }
-    } else{
-      //this.return(ball[this.place].preyHunting);
+    }else{
+      //if the ball it's hunting isn't in range, the ball will continue returning
       ball[this.place].startRotation();
     }
   if(ball[this.place].wasSpliced === true){
     ball[this.place].preyHunting = null;
     ball[this.place].wasSpliced = false;
+    ball[this.place].isHunting = false;
   }
 }
 
-
+//this is an old return function that I am NOT using
 Orbiter.prototype.huntReturn = function(loc, mag){
   var speed;
   speed = JSVector.subGetNew(loc, this.loc);
