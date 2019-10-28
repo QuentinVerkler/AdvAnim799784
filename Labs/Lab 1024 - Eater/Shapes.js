@@ -12,6 +12,8 @@ function BallClass(x, y, vx, vy, ax, ay, radius, numOrbiters, range, place, numP
   this.numPrey = numPrey;
   this.place = place;
   this.isHunting = false;
+  this.preyHunting = null;
+  this.wasSpliced = false;
   for(let a = 0; a < numOrbiters; a++){
     this.orbiter[a] = new Orbiter(4, (2*Math.PI/numOrbiters) * a, .03, 120, this.loc, 1, 240, radius, place, true, range, numPrey);
   }

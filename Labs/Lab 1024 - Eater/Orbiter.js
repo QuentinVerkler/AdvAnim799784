@@ -16,9 +16,10 @@ function Orbiter(radius, angle, angleV, orbitRadius, ballLoc, deltaR, max, min, 
   this.hunter = hunter;
   this.range = range;
   this.numPrey = numballs;
-  this.ballHunting = -1;
+  this.ballHunting = null;
   this.isHunting = false;
   this.eatTime = 30;
+
 }
 
 //instance functions
@@ -53,6 +54,7 @@ Orbiter.prototype.return = function(thisPrey){
   }
 }
 
+//simple return: will return at 1 pixel per call
 Orbiter.prototype.return1 = function(){
   this.orbitRadius -= 1;
 }
@@ -69,48 +71,55 @@ Orbiter.prototype.update = function(){
     this.loc.x = this.ballLoc.x + this.orbitRadius*Math.cos(this.angle);
     this.loc.y = this.ballLoc.y + this.orbitRadius*Math.sin(this.angle);
     this.angle += this.angleV;
-    for(let b = this.numPrey - 1; b >= 0; b--){
-      //var hunted = prey[b];
-      //section to look for prey. If one is in range, will hunt
-      if(((prey[b].isHunted === false) || (b === this.ballHunting)) && ball[this.place].loc.distance(prey[b].loc) < this.range){
-        if(ball[this.place].isHunting === false){
+    for(let b = prey.length - 1; b >= 0; b--){
+      //if the ball isn't hunting, it will look for a ball
+      if(ball[this.place].preyHunting === null){
+        if(((prey[b].isHunted === false)) && ball[this.place].loc.distance(prey[b].loc) < this.range && ball[this.place].isHunting === false){
+
+          ball[this.place].preyHunting = prey[b];
           ball[this.place].isHunting = true;
+          this.isHunting = true;
           ball[this.place].stopRotation();
-          this.ballHunting = b;
+          this.ballHunting = prey[b];
           prey[b].isHunted = true;
           prey[b].lifeSpan -= 1;
-          this.hunt(prey[b], this.loc.distance(prey[b].loc));
-          //while the prey is still too far away, it will continue to return
-          if(this.orbitRadius <= this.planetRadius + this.radius){
-            prey[b].lifeSpan -= 1;
-            //this makes it take time to be eaten
-            if(prey[b].lifeSpan <= 0){
-              prey[b].isDead = true;
-            }else{
-              prey[b].vel = ball[this.place].vel;
-              prey[b].acc = ball[this.place].acc;
-            }
-          //once the prey is in range, it will stop returning
-          }else{
-            prey[b].loc = this.loc;
-            this.return1();
-          }
-          break;
-        }else{
-          prey[b].lifeSpan -= 1;
-          //this makes it take time to be eaten
-          if(prey[b].lifeSpan <= 0){
-            prey[b].isDead = true;
-          }
         }
 
-      }else{
-        this.return(prey[b]);
-        ball[this.place].startRotation();
       }
 
     }
+    if(ball[this.place].preyHunting != null && ball[this.place].loc.distance(ball[this.place].preyHunting.loc) < this.range && this.isHunting){
+      this.hunt(ball[this.place].preyHunting, this.loc.distance(ball[this.place].preyHunting.loc));
+      //while the prey is still too far away, it will continue to return
+      if(this.orbitRadius <= this.planetRadius + this.radius){
+        ball[this.place].preyHunting.lifeSpan -= 1;
+        //this makes it take time to be eaten
+        if(ball[this.place].preyHunting.lifeSpan <= 0){
+          ball[this.place].preyHunting.isDead = true;
+        }else{
+          ball[this.place].preyHunting.vel = ball[this.place].vel;
+          ball[this.place].preyHunting.acc = ball[this.place].acc;
+        }
+        //once the prey is in range, it will stop returning
+      }else{
+        this.return1();
+        ball[this.place].preyHunting.loc = this.loc;
+        ball[this.place].preyHunting.lifeSpan -= 1;
+        //this makes it take time to be eaten
+        if(ball[this.place].preyHunting.lifeSpan <= 0){
+          ball[this.place].preyHunting.isDead = true;
+          ball[this.place].wasSpliced = true;
+        }
+      }
+    } else{
+      //this.return(ball[this.place].preyHunting);
+      ball[this.place].startRotation();
+    }
+  if(ball[this.place].wasSpliced === true){
+    ball[this.place].preyHunting = null;
+    ball[this.place].wasSpliced = false;
   }
+}
 
 
 Orbiter.prototype.huntReturn = function(loc, mag){
