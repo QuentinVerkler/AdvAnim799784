@@ -79,7 +79,7 @@ Orbiter.prototype.update = function(){
 
     }
     //here the ball should only hunt if the previous statement gave it a target
-    if(ball[this.place].preyHunting != null && ball[this.place].loc.distance(ball[this.place].preyHunting.loc) < this.range && this.isHunting){
+    if(ball[this.place].preyHunting != null && this.isHunting && ball[this.place].loc.distance(ball[this.place].preyHunting.loc) < this.range){
       this.hunt(ball[this.place].preyHunting, this.loc.distance(ball[this.place].preyHunting.loc));
       //when the prey is in range, it will start eating it
       if(this.orbitRadius <= this.planetRadius + this.radius){

@@ -7,7 +7,6 @@ function BallClass(x, y, vx, vy, ax, ay, radius, numOrbiters, range, place, numP
   this.acc = new JSVector(ax, ay);
   this.radius = radius;
   this.orbiter = [];
-  this.hunter = true;
   this.range = range;
   this.numPrey = numPrey;
   this.place = place;
