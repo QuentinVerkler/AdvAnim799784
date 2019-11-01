@@ -1,35 +1,34 @@
 //TailClass: a class that makes tails attatched to HeadClass
 
 //constructor
-function TailClass(inFront, width, height, distance){
-  this.loc = new JSVector(inFront.loc.x, inFront.loc.y + height);
-  this.vel = new JSVector(inFront.vel.x, inFront.vel.y);
-  this.acc = new JSVector(inFront.acc.x, inFront.acc.y);
-  //knows what object is infront. doesn't matter if it's a head or tail
+function TailClass(head, inFront, length, distance){
+  //the three primary vectors
+  this.loc = new JSVector(head.loc.x, head.loc.y + length);
+  //knows the head
+  this.head = head;
+  //knows what's in front
   this.front = inFront;
-  this.width = width;
-  this.height = height;
-  //this is the distance between this segment and whatever it is in front
+  //dimensions of tail
+  this.length = length
+  //this is the distance between this segment and the head
   this.distance = distance;
 }
 
 //animation functions
 TailClass.prototype.render = function(){
-  ctx.strokeStyle = 'rgb(106, 255, 0)';
-  ctx.fillStyle = 'rgb(11, 41, 212)';
+  ctx.strokeStyle = 'rgba(44, 138, 23, .7)';
+  ctx.lineWidth = '5';
+  ctx.fillStyle = 'rgba(11, 41, 212, .7)';
 
   ctx.save();
 
   ctx.translate(this.loc.x, this.loc.y);
-  ctx.rotate(this.vel.getDirection() - Math.PI/2);
+  ctx.rotate(this.head.vel.getDirection() - Math.PI/2);
 
   ctx.beginPath();
-  ctx.moveTo(this.width/2, 0);
-  ctx.lineTo(this.width/2, 0);
-  ctx.lineTo(this.width/2, this.height/2);
-  ctx.lineTo(-this.width/2,this.height/2);
-  ctx.lineTo(-this.width/2,-this.height/2);
-  ctx.lineTo(this.width/2,-this.height/2);
+  ctx.moveTo(this.front.distance, 0);
+  ctx.lineTo(this.front.distance, 0);
+  ctx.lineTo(this.distance, this.length);
   ctx.closePath();
   ctx.stroke();
   ctx.fill();
@@ -38,10 +37,9 @@ TailClass.prototype.render = function(){
 }
 
 TailClass.prototype.update = function(){
-  this.acc = this.front.acc.copy();
-  this.vel = this.front.vel.copy();
-  this.loc.x = this.front.loc.x + -this.distance * Math.cos(this.vel.getDirection());
-  this.loc.y = this.front.loc.y + -this.distance * Math.sin(this.vel.getDirection());
+  this.follow();
+  this.loc.x = this.head.loc.x + -this.distance * Math.cos(this.head.vel.getDirection());
+  this.loc.y = this.head.loc.y + -this.distance * Math.sin(this.head.vel.getDirection());
 }
 
 TailClass.prototype.run = function(){
@@ -50,10 +48,11 @@ TailClass.prototype.run = function(){
 }
 
 //Tail specific functions
-TailClass.prototype.follow = function(loc, mag){
-  var force;
-  force = JSVector.subGetNew(loc, this.loc);
-  force.normalize();
-  force.multiply(mag);
-  this.acc.add(force);
+TailClass.prototype.follow = function(){
+  //if(this.loc.distance(this.front.loc) > this.distance){
+    var change;
+    change = JSVector.subGetNew(this.head.loc, this.loc);
+    // change.normalize();
+    // change.multiply(1);
+  //}
 }
