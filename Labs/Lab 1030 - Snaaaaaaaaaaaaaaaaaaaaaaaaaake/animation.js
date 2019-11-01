@@ -14,7 +14,7 @@ function init(){
 	//get context
 	ctx = cnv.getContext('2d');
 
-	snake = new HeadClass(300, 300, 0, 0, 0, 0, 10, 5)
+	snake = new HeadClass(300, 300, 1, 1, 0, 0, 10, 5)
 
   animate();
 }

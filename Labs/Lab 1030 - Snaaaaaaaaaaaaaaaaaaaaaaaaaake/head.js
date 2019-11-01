@@ -7,9 +7,9 @@ function HeadClass(x, y, vx, vy, ax, ay, r, numTail){
   this.acc = new JSVector(ax, ay);
   this.radius = r;
   this.tail = [];
-  this.tail[0] = new TailClass(this, r);
+  this.tail[0] = new TailClass(this, 10, 20, r*2);
   for(let i = 1; i < numTail; i++){
-    this.tail[i] = new TailClass(this.tail[i-1], this.tail[i-1].length);
+    this.tail[i] = new TailClass(this.tail[i-1], this.tail[i-1].width, this.tail[i-1].height, this.tail[i-1].height);
   }
 }
 
