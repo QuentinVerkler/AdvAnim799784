@@ -1,27 +1,26 @@
 //HeadClass: class for head of snake
 
-//constructor
+//++++++++++++++++++++++++++++++++ constructor ++++++++++++++++++++++++++++++++++++
 function HeadClass(x, y, vx, vy, ax, ay, r, numTail){
   this.loc = new JSVector(x, y);
   this.vel = new JSVector(vx, vy);
   this.acc = new JSVector(ax, ay);
   this.radius = r;
   this.tail = [];
-  this.distance = 30
-  //problem: distance from head to first tail is too short with just radius; *2 is temporary solution
-  this.tail[0] = new TailClass(this, this, r*2, 30);
-  var distance = this.tail[0].distance;
+    //problem: distance from head to first tail is too short with just radius; *2 is temporary solution
+  this.tail[0] = new TailClass(this, this, r*2, r, 1, r/2);
+  var opacity = 1;
   for(let i = 1; i < numTail; i++){
-    distance += this.tail[i-1].length;
-    this.tail[i] = new TailClass(this, this.tail[i-1], this.tail[i-1].length, distance);
+    opacity -= (1/numTail);
+    this.tail[i] = new TailClass(this, this.tail[i-1], this.tail[i-1].length, this.tail[i-1].length, opacity, r/2);
   }
 }
 
-//animation functions
+//++++++++++++++++++++++++++++++++ animation functions ++++++++++++++++++++++++++++
 HeadClass.prototype.render = function(){
   ctx.strokStyle = 'rgba(11, 41, 212, 0)';
   ctx.lineWidth = '0';
-  ctx.fillStyle = 'rgb(184, 15, 15)';
+  ctx.fillStyle = 'rgb(35, 99, 43)';
 
   ctx.beginPath();
   ctx.arc(this.loc.x, this.loc.y, this.radius, 2*Math.PI, 0, false);
