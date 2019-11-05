@@ -7,18 +7,20 @@ function HeadClass(x, y, vx, vy, ax, ay, r, numTail){
   this.acc = new JSVector(ax, ay);
   this.radius = r;
   this.tail = [];
+  this.distance = 30
   //problem: distance from head to first tail is too short with just radius; *2 is temporary solution
-  this.tail[0] = new TailClass(this, 10, r*2);
-  var distance = this.tail[0].height;
+  this.tail[0] = new TailClass(this, this, r*2, 30);
+  var distance = this.tail[0].distance;
   for(let i = 1; i < numTail; i++){
+    distance += this.tail[i-1].length;
     this.tail[i] = new TailClass(this, this.tail[i-1], this.tail[i-1].length, distance);
-    distance += this.tail[i-1].height;
   }
 }
 
 //animation functions
 HeadClass.prototype.render = function(){
   ctx.strokStyle = 'rgba(11, 41, 212, 0)';
+  ctx.lineWidth = '0';
   ctx.fillStyle = 'rgb(184, 15, 15)';
 
   ctx.beginPath();
