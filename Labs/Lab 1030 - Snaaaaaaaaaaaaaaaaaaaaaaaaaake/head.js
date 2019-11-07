@@ -8,11 +8,13 @@ function HeadClass(x, y, vx, vy, ax, ay, r, numTail){
   this.radius = r;
   this.tail = [];
     //problem: distance from head to first tail is too short with just radius; *2 is temporary solution
-  this.tail[0] = new TailClass(this, this, r*2, r, 1, r/2);
   var opacity = 1;
+  var width = 3*(r/4)
+  this.tail[0] = new TailClass(this, this, 3*r/5, r/2, opacity, width);
   for(let i = 1; i < numTail; i++){
     opacity -= (1/numTail);
-    this.tail[i] = new TailClass(this, this.tail[i-1], this.tail[i-1].length, this.tail[i-1].length, opacity, r/2);
+    width -= (3*(r/4)/numTail)
+    this.tail[i] = new TailClass(this, this.tail[i-1], this.tail[i-1].length, this.tail[i-1].length, opacity, width);
   }
 }
 
@@ -50,5 +52,4 @@ HeadClass.prototype.run = function(){
   for(let i = 0; i < this.tail.length; i++){
     this.tail[i].run();
   }
-  this.acc.setMagnitude(0);
 }

@@ -1,19 +1,18 @@
 //Orbiter: a class that makes orbiter objects
 
 //class constructor
-function Orbiter(radius, angle, angleV, orbitRadius, ballLoc, deltaR, max, min, place, hunter, range, numballs){
+function Orbiter(radius, angle, angleV, orbitRadius, ballLoc, deltaR, max, hunter, range, body){
   this.radius = radius;
   this.angle = angle;
   this.angleV = angleV;
   this.loc = new JSVector(0, 0);
-  this.orbitRadius = min;
+  this.orbitRadius = orbitRadius;
   this.ballLoc = ballLoc;
   this.max = max;
-  this.planetRadius = min;
-  //this is the place of the ball in its array
-  this.place = place;
+  this.planetRadius = orbitRadius;
+  //this is the body the orbiter belongs to
+  this.body = body
   this.range = range;
-  this.numPrey = numballs;
   this.ballHunting = null;
   this.isHunting = false;
 
@@ -56,28 +55,43 @@ Orbiter.prototype.hunt = function(thisPrey, distance){
   }
 }
 
+//actual update function: work in progress
 Orbiter.prototype.update = function(){
-    //this.check();// checks
-    this.loc.x = this.ballLoc.x + this.orbitRadius*Math.cos(this.angle);
-    this.loc.y = this.ballLoc.y + this.orbitRadius*Math.sin(this.angle);
-    this.angle += this.angleV;
-    //if the ball isn't hunting, it will look for a prey
-    if(ball[this.place].preyHunting === null){
-      for(let b = prey.length - 1; b >= 0; b--){
-        if(((prey[b].isHunted === false)) && ball[this.place].loc.distance(prey[b].loc) < this.range && ball[this.place].isHunting === false){
-
-          ball[this.place].preyHunting = prey[b];
-          ball[this.place].isHunting = true;
-          this.isHunting = true;
-          ball[this.place].stopRotation();
-          this.ballHunting = prey[b];
-          prey[b].isHunted = true;
-          prey[b].lifeSpan -= 1;
-        }
-
+  //actuall animation part
+  this.loc.x = this.ballLoc.x + this.orbitRadius*Math.cos(this.angle);
+  this.loc.y = this.ballLoc.y + this.orbitRadius*Math.sin(this.angle);
+  this.angle += this.angleV;
+  //++++hunting part++++
+  //if the ball does not have a target, it will look for a target
+  if(this.body.preyHunting === null){
+    for(let i = prey.length - 1; i >= 0; i--){
+      if(prey[i].isHunted === false && this.body.loc.distance(prey[b].loc) < this.range && this.body.isHunting === false){
+        this.body.preyHunting = prey[i];
+        this.body.isHunting = true;
+        this.isHunting = true;
+        this.ballHunting = prey[i];
+        prey[i].isHunted = true;
       }
-
     }
+  }
+  //if the prey gets too far away, the ball will cease isHunting; may scrap
+  // if(this.body.preyHunting != null && this.body.loc.distance(prey[b].loc) > this.range + 50){
+  //   this.body.preyHunting.isHunted = false;
+  //   this.body.preyHunting = null;
+  //   this.body.isHunting = false;
+  //   this.isHunting = false;
+  //   this.ballHunting = null;
+  // }
+  //if it has a target, ball must be hunting; checks if this orbiter is the one hunting
+  if(this.isHunting){
+
+  }
+
+
+}
+
+//old update function: used as a road map
+Orbiter.prototype.update = function(){
     //here the ball should only hunt if the previous statement gave it a target
     if(ball[this.place].preyHunting != null && this.isHunting && ball[this.place].loc.distance(ball[this.place].preyHunting.loc) < this.range){
       this.hunt(ball[this.place].preyHunting, this.loc.distance(ball[this.place].preyHunting.loc));

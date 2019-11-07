@@ -1,7 +1,7 @@
 //BallClass: A class to make balls
 
 //class constructor
-function BallClass(x, y, vx, vy, ax, ay, radius, numOrbiters, range, place, numPrey){
+function BallClass(x, y, vx, vy, ax, ay, radius, numOrbiters, range, numPrey){
   this.loc = new JSVector(x, y);
   this.vel = new JSVector(vx, vy);
   this.acc = new JSVector(ax, ay);
@@ -9,16 +9,15 @@ function BallClass(x, y, vx, vy, ax, ay, radius, numOrbiters, range, place, numP
   this.orbiter = [];
   this.range = range;
   this.numPrey = numPrey;
-  this.place = place;
   this.isHunting = false;
   this.preyHunting = null;
   this.wasSpliced = false;
   for(let a = 0; a < numOrbiters; a++){
-    this.orbiter[a] = new Orbiter(4, (2*Math.PI/numOrbiters) * a, .03, 120, this.loc, 1, 240, radius, place, true, range, numPrey);
+    this.orbiter[a] = new Orbiter(4, (2*Math.PI/numOrbiters) * a, .03, radius, this.loc, 1, 240, true, range, this);
   }
 }
 
-// instance funtions
+//++++++++++++++++++++++++++++++++ animation functions ++++++++++++++++++++++++++++
 BallClass.prototype.render = function(){
   //hunters are green
   ctx.strokStyle = 'rgb(255,105,180)';
@@ -30,6 +29,37 @@ BallClass.prototype.render = function(){
   ctx.fill();
 }
 
+BallClass.prototype.update = function(){
+  if(this.isHunting){
+    this.hunt(this.preyHunting.loc, 1);
+  }
+  this.vel.add(this.acc);
+  this.vel.limit(15);
+  this.loc.add(this.vel);
+}
+
+BallClass.prototype.check = function(){
+  if(this.loc.x < this.radius || this.loc.x + this.radius > window.innerWidth){
+    this.vel.x = -this.vel.x;
+  }
+  if(this.loc.y < this.radius || this.loc.y + this.radius > window.innerHeight){
+    this.vel.y = -this.vel.y;
+  }
+}
+
+BallClass.prototype.run = function(){
+  this.update();
+  this.render();
+  this.check();
+  for(let a = 0; a < this.orbiter.length; a++){
+    this.orbiter[a].update();
+    this.orbiter[a].render();
+  }
+  this.acc.setMagnitude(0);
+}
+
+//++++++++++++++++++++++++++++++++ Tail specific functions ++++++++++++++++++++++++
+//attracts this ball to a location
 BallClass.prototype.attract = function(loc, mag){
   var force;
   force = JSVector.subGetNew(loc, this.loc);
@@ -38,6 +68,7 @@ BallClass.prototype.attract = function(loc, mag){
   this.acc.add(force);
 }
 
+//repells this ball from a location
 BallClass.prototype.repulse = function(loc, mag){
   var force;
   force = JSVector.subGetNew(this.loc, loc);
@@ -46,12 +77,7 @@ BallClass.prototype.repulse = function(loc, mag){
   this.acc.add(force);
 }
 
-BallClass.prototype.update = function(){
-  this.vel.add(this.acc);
-  this.vel.limit(15);
-  this.loc.add(this.vel);
-}
-
+//may get rid of; supposed to attract ball to prey
 BallClass.prototype.hunt = function(loc, mag){
   var speed;
   speed = JSVector.subGetNew(loc, this.loc);
@@ -72,24 +98,8 @@ BallClass.prototype.startRotation = function(){
   }
 }
 
-BallClass.prototype.run = function(){
-  this.update();
-  this.render();
-  this.check();
-  for(let a = 0; a < this.orbiter.length; a++){
-    this.orbiter[a].update();
-    this.orbiter[a].render();
-  }
-  this.acc.setMagnitude(0);
+//checks if this ball is equal to another ball
+BallClass.prototype.isEqual = function(other){
+  return this.loc.x = other.loc.x && this.loc.y = other.loc.y && this.vel.x = other.vel.x && this.vel.y = other.vel.y && this.radius = other.radius && this.isHunting = other.isHunting
 }
-
-BallClass.prototype.check = function(){
-  if(this.loc.x < this.radius || this.loc.x + this.radius > window.innerWidth){
-    this.vel.x = -this.vel.x;
-  }
-  if(this.loc.y < this.radius || this.loc.y + this.radius > window.innerHeight){
-    this.vel.y = -this.vel.y;
-  }
-}
-
 //+++++++++++++++END CLASS+++++++++++++++++++++++++++++++++++++++++

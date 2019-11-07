@@ -4,15 +4,11 @@
 function TailClass(head, inFront, length, distance, opacity, width){
   //the three primary vectors
   this.loc = new JSVector(inFront.loc.x, inFront.loc.y + distance);
-  //knows the head
-  this.head = head;
   //knows what's in front
   this.front = inFront;
   //dimension of tail
   this.length = length;
   this.width = width;
-  //this is the distance between this segment and the head
-  this.distanceHead = this.loc.distance(this.head.loc);
   //this gives distance from one in front
   this.distanceFront = this.loc.distance(inFront.loc);
   //makes opacity of tail
@@ -22,8 +18,8 @@ function TailClass(head, inFront, length, distance, opacity, width){
 //++++++++++++++++++++++++++++++++ animation functions ++++++++++++++++++++++++++++
 TailClass.prototype.render = function(){
   ctx.strokeStyle = 'rgba(44, 138, 23, ' + this.opacity + ')';
-  ctx.lineWidth = this.width;
-  ctx.fillStyle = 'rgba(11, 41, 212, ' + this.opacity + ')';
+  ctx.lineWidth = this.width * 1.5;
+  ctx.lineJoin = 'round';
 
   ctx.save();
 
@@ -43,8 +39,8 @@ TailClass.prototype.render = function(){
 
 TailClass.prototype.update = function(){
   var angle = this.getAngle();
-  this.loc.x = this.front.loc.x - this.distanceFront * Math.cos(angle);
-  this.loc.y = this.front.loc.y - this.distanceFront * Math.sin(angle);
+  this.loc.x = this.front.loc.x - this.distanceFront * 1 * Math.cos(angle);
+  this.loc.y = this.front.loc.y - this.distanceFront * 1 * Math.sin(angle);
 }
 
 TailClass.prototype.run = function(){
