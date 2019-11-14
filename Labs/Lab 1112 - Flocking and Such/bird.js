@@ -8,6 +8,9 @@ function BirdClass(x, y, vx, vy, ax, ay, flock, maxSpeed, maxForce){
   this.flock = flock;
   this.maxSpeed = maxSpeed;
   this.maxForce = maxForce;
+  this.alignDist = .0001;
+  this.cohDist = .0001;
+  this.sepDist = .0001;
 }
 
 //++++++++++++++++++++++++++++++++ animation functions ++++++++++++++++++++++++++++
@@ -37,31 +40,32 @@ BirdClass.prototype.render = function(){
 }
 
 BirdClass.prototype.update = function(){
-  this.separation();
+  this.steerForces();
   this.vel.add(this.acc);
   this.vel.limit(this.maxSpeed);
   this.loc.add(this.vel);
+  this.acc.setMagnitude(0);
 }
 
 BirdClass.prototype.check = function(){
   var desire;
-  if(this.loc.x < 25){
+  if(this.loc.x < 40){
     desire = new JSVector(this.maxSpeed, this.vel.y);
     var steer = JSVector.subGetNew(desire, this.vel);
     steer.limit(this.maxForce);
     this.addForce(steer);
-  }else if(this.loc.x > cnv.width - 25){
+  }else if(this.loc.x > cnv.width - 40){
     desire = new JSVector(-this.maxSpeed, this.vel.y);
     var steer = JSVector.subGetNew(desire, this.vel);
     steer.limit(this.maxForce);
     this.addForce(steer);
   }
-  if(this.loc.y < 25){
+  if(this.loc.y < 40){
     desire = new JSVector(this.vel.x, this.maxSpeed);
     var steer = JSVector.subGetNew(desire, this.vel);
     steer.limit(this.maxForce);
     this.addForce(steer);
-  }else if (this.loc.y > cnv.height - 25) {
+  }else if (this.loc.y > cnv.height - 40) {
     desire = new JSVector(this.vel.x, -this.maxSpeed);
     var steer = JSVector.subGetNew(desire, this.vel);
     steer.limit(this.maxForce);
@@ -74,25 +78,41 @@ BirdClass.prototype.run = function(){
   this.update();
   this.render();
 
-  this.acc.setMagnitude(0);
 }
 
 //++++++++++++++++++++++++++++++++ Bird functions +++++++++++++++++++++++++++++++++
+//this is all of the forces
+BirdClass.prototype.steerForces = function(){
+  this.separation();
+  this.alignment();
+  this.cohesion();
+}
+
+//adds force to acc
 BirdClass.prototype.addForce = function(force){
   this.acc.add(force);
+}
+
+BirdClass.prototype.seekCoh = function(v1){
+  var desired = JSVector.subGetNew(v1, this.loc);
+  desired.normalize();
+  desired.multiply(this.maxSpeed);
+  var steer = JSVector.subGetNew(desired, this.vel);
+  steer.limit(this.maxForce/8);
+  this.addForce(steer);
 }
 
 BirdClass.prototype.separation = function(){
   var sum = new JSVector(0, 0);
   var count = 0;
-  for(let i = 0; i < flock.length; i++){
-    var distance = this.loc.distance(flock[i].loc)
-    if(distance > 0 && distance < 25){
-      var diff = JSVector.subGetNew(this.loc, flock[i].loc);
+  for(let i = 0; i < this.flock.length; i++){
+    var distance = this.loc.distance(this.flock[i].loc)
+    if(distance > 0 && distance < this.sepDist){
+      var diff = JSVector.subGetNew(this.loc, this.flock[i].loc);
       diff.normalize();
       diff.divide(distance);
       sum.add(diff);
-      count++
+      count++;
     }
   }
 
@@ -100,8 +120,44 @@ BirdClass.prototype.separation = function(){
     sum.divide(count);
     sum.normalize();
     sum.multiply(this.maxSpeed);
-    var steer = new JSVector(sum, this.vel);
-    steer.limit(this.maxForce);
+    var steer = JSVector.subGetNew(sum, this.vel);
+    steer.limit(this.maxForce/2);
     this.addForce(steer);
+  }
+}
+
+BirdClass.prototype.alignment = function(){
+  var sum = new JSVector(0, 0);
+  var count = 0;
+  for(let i = 0; i < this.flock.length; i++){
+    var distance = this.loc.distance(this.flock[i].loc);
+    if(distance > 0 && distance < this.alignDist){
+      sum.add(flock[i].vel);
+      count++;
+    }
+  }
+  if(count > 0){
+    sum.divide(count);
+    sum.normalize();
+    sum.multiply(this.maxSpeed / 2);
+    var steer = JSVector.subGetNew(sum, this.vel);
+    steer.limit(this.maxForce / 2);
+    this.addForce(steer);
+  }
+}
+
+BirdClass.prototype.cohesion = function(){
+  var sum = new JSVector(0, 0);
+  var count = 0;
+  for(let i = 0; i < this.flock.length; i++){
+    var distance = this.loc.distance(this.flock[i].loc);
+    if(distance > 0 && distance < this.cohDist){
+      sum.add(flock[i].loc);
+      count++;
+    }
+  }
+  if(count > 0){
+    sum.divide(count);
+    this.seekCoh(sum);
   }
 }

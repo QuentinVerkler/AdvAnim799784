@@ -2,14 +2,35 @@
 <html>
   <head>
     <script src = "jsvector.js"></script>
-    <link rel = "stylesheet" type = "text/css" >
+    <link rel = "stylesheet" type = "text/css" href = "mystyles.css" >
     <script src = "animation.js"></script>
     <script src = "flock.js"></script>
     <script src = "bird.js"></script>
   </head>
 
   <body>
-    <canvas id = "cnv"></canvas>
+
+    <div id = "wrapper">
+      <div id = "sliderDiv">
+
+        <div class = "slider">
+          Separation<br>
+          <input id = "sep" type = "range">
+        </div>
+
+        <div class = "slider">
+          Alignment<br>
+          <input id = "align" type = "range">
+        </div>
+
+        <div class = "slider">
+          Cohesion<br>
+          <input id = "coh" type = "range">
+        </div>
+      </div>
+
+      <canvas id = "cnv"></canvas>
+    </div>
 
   <script>
 
