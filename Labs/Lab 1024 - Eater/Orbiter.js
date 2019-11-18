@@ -65,12 +65,13 @@ Orbiter.prototype.update = function(){
   //if the ball does not have a target, it will look for a target
   if(this.body.preyHunting === null){
     for(let i = prey.length - 1; i >= 0; i--){
-      if(prey[i].isHunted === false && this.body.loc.distance(prey[b].loc) < this.range && this.body.isHunting === false){
+      if(prey[i].isHunted === false && this.body.loc.distance(prey[i].loc) < this.range && this.body.isHunting === false){
         this.body.preyHunting = prey[i];
         this.body.isHunting = true;
         this.isHunting = true;
         this.ballHunting = prey[i];
         prey[i].isHunted = true;
+        break;
       }
     }
   }
@@ -84,44 +85,44 @@ Orbiter.prototype.update = function(){
   // }
   //if it has a target, ball must be hunting; checks if this orbiter is the one hunting
   if(this.isHunting){
-
+    this.orbitRadius +=1;
   }
 
 
 }
 
-//old update function: used as a road map
-Orbiter.prototype.update = function(){
-    //here the ball should only hunt if the previous statement gave it a target
-    if(ball[this.place].preyHunting != null && this.isHunting && ball[this.place].loc.distance(ball[this.place].preyHunting.loc) < this.range){
-      this.hunt(ball[this.place].preyHunting, this.loc.distance(ball[this.place].preyHunting.loc));
-      //when the prey is in range, it will start eating it
-      if(this.orbitRadius <= this.planetRadius + this.radius){
-        ball[this.place].preyHunting.lifeSpan -= 1;
-        //this makes it take time to be eaten
-        if(ball[this.place].preyHunting.lifeSpan <= 0){
-          ball[this.place].preyHunting.isDead = true;
-          ball[this.place].wasSpliced = true;
-        }else{
-        //this makes the prey stay with the ball
-          ball[this.place].preyHunting.vel = ball[this.place].vel;
-          ball[this.place].preyHunting.acc = ball[this.place].acc;
-        }
-      //else, it will continue bringing the prey back.
-      }else{
-        this.return1();
-        ball[this.place].preyHunting.loc = this.loc;
-      }
-    }else{
-      //if the ball it's hunting isn't in range, the ball will continue returning
-      ball[this.place].startRotation();
-    }
-  if(ball[this.place].wasSpliced === true){
-    ball[this.place].preyHunting = null;
-    ball[this.place].wasSpliced = false;
-    ball[this.place].isHunting = false;
-  }
-}
+// //old update function: used as a road map
+// Orbiter.prototype.update = function(){
+//     //here the ball should only hunt if the previous statement gave it a target
+//     if(ball[this.place].preyHunting != null && this.isHunting && ball[this.place].loc.distance(ball[this.place].preyHunting.loc) < this.range){
+//       this.hunt(ball[this.place].preyHunting, this.loc.distance(ball[this.place].preyHunting.loc));
+//       //when the prey is in range, it will start eating it
+//       if(this.orbitRadius <= this.planetRadius + this.radius){
+//         ball[this.place].preyHunting.lifeSpan -= 1;
+//         //this makes it take time to be eaten
+//         if(ball[this.place].preyHunting.lifeSpan <= 0){
+//           ball[this.place].preyHunting.isDead = true;
+//           ball[this.place].wasSpliced = true;
+//         }else{
+//         //this makes the prey stay with the ball
+//           ball[this.place].preyHunting.vel = ball[this.place].vel;
+//           ball[this.place].preyHunting.acc = ball[this.place].acc;
+//         }
+//       //else, it will continue bringing the prey back.
+//       }else{
+//         this.return1();
+//         ball[this.place].preyHunting.loc = this.loc;
+//       }
+//     }else{
+//       //if the ball it's hunting isn't in range, the ball will continue returning
+//       ball[this.place].startRotation();
+//     }
+//   if(ball[this.place].wasSpliced === true){
+//     ball[this.place].preyHunting = null;
+//     ball[this.place].wasSpliced = false;
+//     ball[this.place].isHunting = false;
+//   }
+// }
 
 //this is an old return function that I am NOT using
 Orbiter.prototype.huntReturn = function(loc, mag){

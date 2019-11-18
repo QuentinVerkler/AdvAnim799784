@@ -1,12 +1,13 @@
 //BallClass: A class to make balls
 
 //class constructor
-function BallClass(x, y, vx, vy, ax, ay, radius, numOrbiters, range, numPrey){
+function BallClass(x, y, vx, vy, ax, ay, radius, place, numOrbiters, range, numPrey){
   this.loc = new JSVector(x, y);
   this.vel = new JSVector(vx, vy);
   this.acc = new JSVector(ax, ay);
   this.radius = radius;
   this.orbiter = [];
+  this.place = place;
   this.range = range;
   this.numPrey = numPrey;
   this.isHunting = false;
@@ -39,10 +40,10 @@ BallClass.prototype.update = function(){
 }
 
 BallClass.prototype.check = function(){
-  if(this.loc.x < this.radius || this.loc.x + this.radius > window.innerWidth){
+  if(this.loc.x < this.radius || this.loc.x + this.radius > cnv.width){
     this.vel.x = -this.vel.x;
   }
-  if(this.loc.y < this.radius || this.loc.y + this.radius > window.innerHeight){
+  if(this.loc.y < this.radius || this.loc.y + this.radius > cnv.height){
     this.vel.y = -this.vel.y;
   }
 }
@@ -98,8 +99,8 @@ BallClass.prototype.startRotation = function(){
   }
 }
 
-//checks if this ball is equal to another ball
-BallClass.prototype.isEqual = function(other){
-  return this.loc.x = other.loc.x && this.loc.y = other.loc.y && this.vel.x = other.vel.x && this.vel.y = other.vel.y && this.radius = other.radius && this.isHunting = other.isHunting
-}
+// //checks if this ball is equal to another ball
+// BallClass.prototype.isEqual = function(other){
+//   return this.loc.x === other.loc.x && this.loc.y === other.loc.y && this.vel.x === other.vel.x && this.vel.y = other.vel.y && this.radius = other.radius && this.isHunting = other.isHunting
+// }
 //+++++++++++++++END CLASS+++++++++++++++++++++++++++++++++++++++++

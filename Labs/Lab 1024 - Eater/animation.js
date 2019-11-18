@@ -14,19 +14,19 @@ function init(){
 	//get canvas
 	cnv = document.getElementById('cnv');
 	//set dimensions
-	cnv.width = window.innerWidth;
-	cnv.height = window.innerHeight;
+	cnv.width = 900;
+	cnv.height = 900;
 	cnv.style.border = 'solid black 2x';
 	cnv.style.backgroundColor = 'rgba(255, 163, 5, .5)';
 	//get context
 	ctx = cnv.getContext('2d');
 
   for(let a = 0; a < numballs; a++){
-			ball[a] = new BallClass(Math.random()*window.innerWidth, Math.random()*window.innerHeight, Math.random()*6-3, Math.random()*6-3, 0, 0, Math.random()* 20+15, orbiters, 200, a, numPrey);
+			ball[a] = new BallClass(Math.random()*cnv.width, Math.random()*cnv.height, Math.random()*6-3, Math.random()*6-3, 0, 0, Math.random()*20+15, a, orbiters, 200, numPrey);
 		}
 
 	for(let a = 0; a < numPrey; a++){
-			prey[a] = new PreyClass(Math.random()*window.innerWidth, Math.random()*window.innerHeight, Math.random()*6-3, Math.random()*6-3, 0, 0, a, numballs);
+			prey[a] = new PreyClass(Math.random()*cnv.width, Math.random()*cnv.height, Math.random()*6-3, Math.random()*6-3, 0, 0, a, numballs);
 		}
 
   //ball = new BallClass(Math.random()*window.innerWidth, Math.random()*window.innerHeight, Math.random()*6-3, Math.random()*6-3, 0, 0, Math.random()* 20+20, 8);

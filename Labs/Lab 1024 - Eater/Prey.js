@@ -19,7 +19,7 @@ PreyClass.prototype.render = function(){
     ctx.fillStyle = 'rgb(3, 232, 252)';
   }else{
     ctx.strokeStyle = 'rgb(136, 3, 252)';
-    ctx.fillStyle = 'rgb(156, 23, 14)';  
+    ctx.fillStyle = 'rgb(156, 23, 14)';
   }
 
   ctx.save();
@@ -50,10 +50,10 @@ PreyClass.prototype.update = function(){
 }
 
 PreyClass.prototype.check = function(){
-  if(this.loc.x < 12 || this.loc.x + 12 > window.innerWidth){
+  if(this.loc.x < 12 || this.loc.x + 12 > cnv.width){
     this.vel.x = -this.vel.x;
   }
-  if(this.loc.y < 12 || this.loc.y + 12 > window.innerHeight){
+  if(this.loc.y < 12 || this.loc.y + 12 > cnv.height){
     this.vel.y = -this.vel.y;
   }
 }
