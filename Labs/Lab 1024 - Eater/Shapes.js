@@ -1,20 +1,18 @@
 //BallClass: A class to make balls
 
 //class constructor
-function BallClass(x, y, vx, vy, ax, ay, radius, place, numOrbiters, range, numPrey){
+function BallClass(x, y, vx, vy, ax, ay, radius, numOrbiters, range){
   this.loc = new JSVector(x, y);
   this.vel = new JSVector(vx, vy);
   this.acc = new JSVector(ax, ay);
   this.radius = radius;
   this.orbiter = [];
-  this.place = place;
   this.range = range;
-  this.numPrey = numPrey;
   this.isHunting = false;
   this.preyHunting = null;
   this.wasSpliced = false;
   for(let a = 0; a < numOrbiters; a++){
-    this.orbiter[a] = new Orbiter(4, (2*Math.PI/numOrbiters) * a, .03, radius, this.loc, 1, 240, true, range, this);
+    this.orbiter[a] = new Orbiter(4, (2*Math.PI/numOrbiters) * a, .03, radius, range, this);
   }
 }
 
@@ -31,9 +29,6 @@ BallClass.prototype.render = function(){
 }
 
 BallClass.prototype.update = function(){
-  if(this.isHunting){
-    this.hunt(this.preyHunting.loc, 1);
-  }
   this.vel.add(this.acc);
   this.vel.limit(15);
   this.loc.add(this.vel);
@@ -59,7 +54,7 @@ BallClass.prototype.run = function(){
   this.acc.setMagnitude(0);
 }
 
-//++++++++++++++++++++++++++++++++ Tail specific functions ++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++ Ball specific functions ++++++++++++++++++++++++
 //attracts this ball to a location
 BallClass.prototype.attract = function(loc, mag){
   var force;
@@ -78,29 +73,5 @@ BallClass.prototype.repulse = function(loc, mag){
   this.acc.add(force);
 }
 
-//may get rid of; supposed to attract ball to prey
-BallClass.prototype.hunt = function(loc, mag){
-  var speed;
-  speed = JSVector.subGetNew(loc, this.loc);
-  speed.normalize();
-  speed.multiply(mag);
-  this.loc.add(speed);
-}
 
-BallClass.prototype.stopRotation = function(){
-  for(let a = 0; a < this.orbiter.length; a++){
-    this.orbiter[a].angleV = 0;
-  }
-}
-
-BallClass.prototype.startRotation = function(){
-  for(let a = 0; a < this.orbiter.length; a++){
-    this.orbiter[a].angleV = this.orbiter[a].oGAngleV;
-  }
-}
-
-// //checks if this ball is equal to another ball
-// BallClass.prototype.isEqual = function(other){
-//   return this.loc.x === other.loc.x && this.loc.y === other.loc.y && this.vel.x === other.vel.x && this.vel.y = other.vel.y && this.radius = other.radius && this.isHunting = other.isHunting
-// }
 //+++++++++++++++END CLASS+++++++++++++++++++++++++++++++++++++++++

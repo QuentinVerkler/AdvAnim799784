@@ -1,14 +1,12 @@
 
 
-function PreyClass(x, y, vx, vy, ax, ay, place, numballs){
+function PreyClass(x, y, vx, vy, ax, ay, place){
   this.loc = new JSVector(x, y);
   this.vel = new JSVector(vx, vy);
   this.acc = new JSVector(ax, ay);
-  this.numballs = numballs;
   this.place = place;
   this.isHunted = false;
-  this.hunter = false;
-  this.isDead = false;
+  this.hunter = null;
   this.lifeSpan = 500;
 }
 
@@ -19,7 +17,7 @@ PreyClass.prototype.render = function(){
     ctx.fillStyle = 'rgb(3, 232, 252)';
   }else{
     ctx.strokeStyle = 'rgb(136, 3, 252)';
-    ctx.fillStyle = 'rgb(156, 23, 14)';
+    ctx.fillStyle = 'rgb(240, 133, 15)';
   }
 
   ctx.save();
@@ -44,8 +42,11 @@ PreyClass.prototype.render = function(){
 }
 
 PreyClass.prototype.update = function(){
+  if(this.isHunted && this.lifeSpan >= 500){
+    this.repulse(this.hunter.loc, .1);
+  }
   this.vel.add(this.acc);
-  this.vel.limit(15);
+  this.vel.limit(10);
   this.loc.add(this.vel);
 }
 
@@ -73,18 +74,4 @@ PreyClass.prototype.repulse = function(loc, mag){
   force.normalize();
   force.multiply(mag);
   this.acc.add(force);
-}
-
-PreyClass.prototype.update = function(){
-  this.vel.add(this.acc);
-  this.vel.limit(15);
-  this.loc.add(this.vel);
-}
-
-PreyClass.prototype.hunted = function(loc, mag){
-  var speed;
-  speed = JSVector.subGetNew(loc, this.loc);
-  speed.normalize();
-  speed.multiply(mag);
-  this.loc.add(speed);
 }
