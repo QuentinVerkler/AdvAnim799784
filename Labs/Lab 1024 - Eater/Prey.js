@@ -26,14 +26,14 @@ PreyClass.prototype.render = function(){
   ctx.rotate(this.vel.getDirection() - Math.PI/2);
 
   ctx.beginPath();
-  ctx.moveTo(-9, -12);
-  ctx.lineTo(0, 15);
+  ctx.moveTo(-9/2, -12/2);
+  ctx.lineTo(0, 15/2);
 
-  ctx.lineTo(9, -12);
+  ctx.lineTo(9/2, -12/2);
 
 
-  ctx.lineTo(0, -3);
-  ctx.lineTo(-9, -12);
+  ctx.lineTo(0, -3/2);
+  ctx.lineTo(-9/2, -12/2);
   ctx.closePath();
   ctx.stroke();
   ctx.fill();
@@ -43,10 +43,10 @@ PreyClass.prototype.render = function(){
 
 PreyClass.prototype.update = function(){
   if(this.isHunted && this.lifeSpan >= 500){
-    this.repulse(this.hunter.loc, .1);
+    this.repulse(this.hunter.loc, .05);
   }
   this.vel.add(this.acc);
-  this.vel.limit(10);
+  this.vel.limit(8);
   this.loc.add(this.vel);
 }
 

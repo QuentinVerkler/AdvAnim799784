@@ -36,7 +36,7 @@ function init(){
 	for(let i = 0; i < flockSize; i++){
 		flock[i] = new BirdClass(Math.random()*cnv.width, Math.random()*cnv.height, Math.random()*6-3, Math.random()*6-3, 0, 0, flock, 5, .3, 2);
 		flock2[i] = new BirdClass(Math.random()*cnv.width, Math.random()*cnv.height, Math.random()*6-3, Math.random()*6-3, 0, 0, flock2, 8, .5, 1);
-		flock3[i] = new BirdClass(Math.random()*cnv.width, Math.random()*cnv.height, Math.random()*6-3, Math.random()*6-3, 0, 0, flock2, 11, .5, 5);
+		flock3[i] = new BirdClass(Math.random()*cnv.width, Math.random()*cnv.height, Math.random()*6-3, Math.random()*6-3, 0, 0, flock3, 11, .5, 5);
 	}
 
 	//bird = new BirdClass(400, 200, -3, -3, 0, 0, 10, .5);

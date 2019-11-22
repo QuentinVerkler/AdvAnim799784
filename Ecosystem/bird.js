@@ -1,7 +1,7 @@
 //bird class: makes different flocks
 
 //++++++++++++++++++++++++++++++++ constructor ++++++++++++++++++++++++++++++++++++
-function BirdClass(x, y, vx, vy, ax, ay, flock, maxSpeed, maxForce, color){
+function BirdClass(x, y, vx, vy, ax, ay, flock, maxSpeed, maxForce){
   this.loc = new JSVector(x, y);
   this.vel = new JSVector(vx, vy);
   this.acc = new JSVector(ax, ay);
@@ -11,13 +11,20 @@ function BirdClass(x, y, vx, vy, ax, ay, flock, maxSpeed, maxForce, color){
   this.alignDist = .0001;
   this.cohDist = .0001;
   this.sepDist = .0001;
-  this.color = color;
+  //prey part
+  this.lifeSpan = 500;
+  this.isHunted = false;
+  this.hunter = null;
 }
 
 //++++++++++++++++++++++++++++++++ animation functions ++++++++++++++++++++++++++++
 BirdClass.prototype.render = function(){
   ctx.strokeStyle = 'rgb(136, 3, 252)';
-  ctx.fillStyle = 'rgb('  + (156 / this.color) + ',' + (200 / this.color) + ',' + (116 / this.color) + ')';
+  if(!this.isHunted){
+    ctx.fillStyle = 'rgb(170, 57, 57)';
+  }else{
+    ctx.fillStyle = 'rgb(23, 74, 0)'; 
+  }
 
   ctx.save();
 
@@ -41,6 +48,9 @@ BirdClass.prototype.render = function(){
 }
 
 BirdClass.prototype.update = function(){
+  if(this.isHunted && this.lifeSpan >= 500){
+    this.repulse(this.hunter.loc, .05);
+  }
   this.steerForces();
   this.vel.add(this.acc);
   this.vel.limit(this.maxSpeed);
@@ -53,23 +63,23 @@ BirdClass.prototype.check = function(){
   if(this.loc.x < 40){
     desire = new JSVector(this.maxSpeed, this.vel.y);
     var steer = JSVector.subGetNew(desire, this.vel);
-    steer.limit(this.maxForce * 1.5);
+    steer.limit(this.maxForce * 1.1);
     this.addForce(steer);
   }else if(this.loc.x > cnv.width - 40){
     desire = new JSVector(-this.maxSpeed, this.vel.y);
     var steer = JSVector.subGetNew(desire, this.vel);
-    steer.limit(this.maxForce * 1.5);
+    steer.limit(this.maxForce * 1.1);
     this.addForce(steer);
   }
   if(this.loc.y < 40){
     desire = new JSVector(this.vel.x, this.maxSpeed);
     var steer = JSVector.subGetNew(desire, this.vel);
-    steer.limit(this.maxForce * 1.5);
+    steer.limit(this.maxForce * 1.1);
     this.addForce(steer);
   }else if (this.loc.y > cnv.height - 40) {
     desire = new JSVector(this.vel.x, -this.maxSpeed);
     var steer = JSVector.subGetNew(desire, this.vel);
-    steer.limit(this.maxForce * 1.5);
+    steer.limit(this.maxForce * 1.1);
     this.addForce(steer);
   }
 }
@@ -94,15 +104,7 @@ BirdClass.prototype.addForce = function(force){
   this.acc.add(force);
 }
 
-BirdClass.prototype.seekCoh = function(v1){
-  var desired = JSVector.subGetNew(v1, this.loc);
-  desired.normalize();
-  desired.multiply(this.maxSpeed);
-  var steer = JSVector.subGetNew(desired, this.vel);
-  steer.limit(this.maxForce/8);
-  this.addForce(steer);
-}
-
+//separation function
 BirdClass.prototype.separation = function(){
   var sum = new JSVector(0, 0);
   var count = 0;
@@ -127,6 +129,7 @@ BirdClass.prototype.separation = function(){
   }
 }
 
+//alignment function
 BirdClass.prototype.alignment = function(){
   var sum = new JSVector(0, 0);
   var count = 0;
@@ -147,6 +150,17 @@ BirdClass.prototype.alignment = function(){
   }
 }
 
+//special seek function for cohesion
+BirdClass.prototype.seekCoh = function(v1){
+  var desired = JSVector.subGetNew(v1, this.loc);
+  desired.normalize();
+  desired.multiply(this.maxSpeed);
+  var steer = JSVector.subGetNew(desired, this.vel);
+  steer.limit(this.maxForce/8);
+  this.addForce(steer);
+}
+
+//cohesion function
 BirdClass.prototype.cohesion = function(){
   var sum = new JSVector(0, 0);
   var count = 0;
@@ -161,4 +175,13 @@ BirdClass.prototype.cohesion = function(){
     sum.divide(count);
     this.seekCoh(sum);
   }
+}
+
+//this function will repulse bird if ballprey too close
+BirdClass.prototype.repulse = function(loc, mag){
+  var force;
+  force = JSVector.subGetNew(this.loc, loc);
+  force.normalize();
+  force.multiply(mag);
+  this.acc.add(force);
 }

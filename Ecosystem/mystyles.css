@@ -1,0 +1,22 @@
+.slider {
+  color: blue;
+
+  border; 2px silid tomato;
+
+  float: left;
+/*
+  position: absolute;
+  left: 10px;
+  top: 5%;
+}
+*/
+
+#sep{
+  position: absolute;
+  top: 10%;
+}
+
+#align{
+  position:absolute;
+  top: 20%;
+}

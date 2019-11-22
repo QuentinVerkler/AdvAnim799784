@@ -99,7 +99,7 @@ Orbiter.prototype.return = function(thisPrey){
   var speed;
   speed = JSVector.subGetNew(this.body.loc, this.loc);
   speed.normalize();
-  speed.multiply(5);
+  speed.multiply(6);
   this.loc.add(speed);
 }
 
@@ -109,6 +109,6 @@ Orbiter.prototype.hunt = function(){
   var speed;
   speed = JSVector.subGetNew(this.ballHunting.loc, this.loc);
   speed.normalize();
-  speed.multiply(5);
+  speed.multiply(6);
   this.loc.add(speed);
 }
