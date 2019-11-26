@@ -17,8 +17,8 @@ function Orbiter(radius, angle, angleV, orbitRadius, range, body){
 //++++++++++++++++++++++++++++++++ animation functions ++++++++++++++++++++++++++++
 Orbiter.prototype.render = function(){
   //ctx.lineWidth = '.5';
-  ctx.strokStyle = 'rgb(171, 10, 10)';
-  ctx.fillStyle = 'rgb(171, 10, 10)';
+  ctx.strokStyle = 'rgb(167, 56, 62)';
+  ctx.fillStyle = 'hsl(357, 50%, 44%)';
 
   ctx.beginPath()
   ctx.arc(this.loc.x, this.loc.y, this.radius, 2*Math.PI, 0, false);
@@ -65,7 +65,6 @@ Orbiter.prototype.update = function(flockHunting){
         this.hunt();
       }else{
         if(this.loc.distance(this.body.loc) > this.radius){
-          this.ballHunting.lifeSpan -= 1;
           this.return();
           this.ballHunting.loc = this.loc.copy();
         }else{
@@ -109,6 +108,6 @@ Orbiter.prototype.hunt = function(){
   var speed;
   speed = JSVector.subGetNew(this.ballHunting.loc, this.loc);
   speed.normalize();
-  speed.multiply(6);
+  speed.multiply(15);
   this.loc.add(speed);
 }

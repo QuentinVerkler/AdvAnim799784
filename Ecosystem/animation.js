@@ -1,20 +1,28 @@
 window.onload = init;
 
+//+++++++event listeners+++++++++
+window.addEventListener("collide", poop);
+
 //canvas and context variables
 var cnv;
 var ctx;
 
+//collision locations
+var collisionLocX;
+var collisionLocY;
+
 //creature arrays
 var flock = [];
 var ballHunters = [];
+var bed = [];
 
 // makes canvas and defines the vars
 function init(){
   //gets canvas
   cnv = document.getElementById('cnv');
   //sets dimensions
-  cnv.width = 1000;
-  cnv.height = 950;
+  cnv.width = 1875;
+  cnv.height = 2000;
   cnv.style.border = 'solid black 2x';
   cnv.style.backgroundColor = 'rgba(82, 147, 49, .5)';
 
@@ -33,6 +41,7 @@ function init(){
 	document.getElementById("coh").min = .000001;
 	document.getElementById("coh").max = 100;
 	document.getElementById("coh").step = "any";
+  //++++end sliders++++
 
 	//get context
 	ctx = cnv.getContext('2d');
@@ -42,6 +51,8 @@ function init(){
 
   addHuntingGroup(3, ballHunters);
 
+  addBed(2, bed);
+
   animate();
 }
 
@@ -49,7 +60,7 @@ function init(){
 //animation function
 function animate(){
   requestAnimationFrame(animate);
-	ctx.clearRect(0,0,window.innerWidth, window.innerHeight);
+	ctx.clearRect(0,0,cnv.width, cnv.height);
 
 	//slider vars
 	var sep = document.getElementById("sep").value;
@@ -57,10 +68,10 @@ function animate(){
 	var coh = document.getElementById("coh").value;
 
   //flock animation
-  for(let i = flock.length-1; i > 0; i--){
+  for(let i = flock.length-1; i >= 0; i--){
     if(flock[i] === null){
 
-    }else if(flock[i].lifespan <= 0){
+    }else if(flock[i].lifeSpan <= 0){
       flock.splice(i, 1);
     }else{
       flock[i].sepDist = sep;
@@ -71,8 +82,17 @@ function animate(){
   }
 
   //ballHunters animation
-  for(let i = ballHunters.length-1; i > 0; i--){
-    ballHunters[i].run(flock);
+  for(let i = ballHunters.length-1; i >= 0; i--){
+    if(ballHunters[i].isDead){
+      ballHunters.splice(i,1);
+    }else {
+      ballHunters[i].run(flock);
+    }
+  }
+
+  //snake animation
+  for(let i = bed.length-1; i >= 0; i--){
+    bed[i].run(ballHunters);
   }
 
 }
@@ -87,12 +107,34 @@ function addFlock(size, group){
 
 //adds a bird to flock
 function addBird(group){
-  thing.push(new BirdClass(Math.random()*cnv.width, Math.random()*cnv.height, Math.random()*6-3, Math.random()*6-3, 0, 0, group, 5, .3));
+  group.push(new BirdClass(Math.random()*cnv.width, Math.random()*cnv.height, Math.random()*6-3, Math.random()*6-3, 0, 0, group, 5, .3));
 }
+//+++++++end flock functions+++++++
 
 //+++++++ballHunter functions+++++++
 function addHuntingGroup(size, group){
   for(let i = 0; i < size; i++){
-    group[i] = new BallHunterClass(Math.random()*cnv.width, Math.random()*cnv.height, Math.random()*6-3, Math.random()*6-3, 0, 0, Math.random()*15+12, Math.ceil(Math.random()*6), 200, 5, .3)
+    group[i] = new BallHunterClass(Math.random()*cnv.width, Math.random()*cnv.height, Math.random()*6-3, Math.random()*6-3, 0, 0, Math.random()*15+12, Math.ceil(Math.random()*6), 200, 5, .3);
   }
+}
+
+//adds hunter to group
+function addHunnter(group){
+  group.push(new BallHunterClass(Math.random()*cnv.width, Math.random()*cnv.height, Math.random()*6-3, Math.random()*6-3, 0, 0, Math.random()*15+12, Math.ceil(Math.random()*6), 200, 5, .3));
+}
+
+
+//+++++++end ballHunter functions+++++++
+
+//+++++++snake functions+++++++
+function addBed(size, group){
+  for(let i = 0; i < size; i++){
+    group[i] = new HeadClass(Math.random()*cnv.width, Math.random()*cnv.height, Math.random()*10-5, Math.random()*10-5, 0, 0, Math.random() * 10 + 12, 15)
+  }
+}
+
+
+//+++++++++++++eventListener functions+++++++++++++++++++++++++
+function poop(collisionEvent){
+
 }

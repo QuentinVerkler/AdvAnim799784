@@ -19,11 +19,11 @@ function BirdClass(x, y, vx, vy, ax, ay, flock, maxSpeed, maxForce){
 
 //++++++++++++++++++++++++++++++++ animation functions ++++++++++++++++++++++++++++
 BirdClass.prototype.render = function(){
-  ctx.strokeStyle = 'rgb(136, 3, 252)';
+  ctx.strokeStyle = 'rgba(136, 3, 252, 0)';
   if(!this.isHunted){
     ctx.fillStyle = 'rgb(170, 57, 57)';
   }else{
-    ctx.fillStyle = 'rgb(23, 74, 0)'; 
+    ctx.fillStyle = 'hsl(0, 50%, 45%)';
   }
 
   ctx.save();
@@ -32,14 +32,14 @@ BirdClass.prototype.render = function(){
   ctx.rotate(this.vel.getDirection() - Math.PI/2);
 
   ctx.beginPath();
-  ctx.moveTo(-9 / 2, -12 / 2);
-  ctx.lineTo(0, 15 / 2);
+  ctx.moveTo(-9 * (2 / 3), -12 * (2 / 3));
+  ctx.lineTo(0, 15 * (2 / 3));
 
-  ctx.lineTo(9 / 2, -12 / 2);
+  ctx.lineTo(9 * (2 / 3), -12 * (2 / 3));
 
 
-  ctx.lineTo(0, -3 / 2);
-  ctx.lineTo(-9 / 2, -12 / 2);
+  ctx.lineTo(0, -3 * (2 / 3));
+  ctx.lineTo(-9 * (2 / 3), -12 * (2 / 3));
   ctx.closePath();
   ctx.stroke();
   ctx.fill();
@@ -49,7 +49,7 @@ BirdClass.prototype.render = function(){
 
 BirdClass.prototype.update = function(){
   if(this.isHunted && this.lifeSpan >= 500){
-    this.repulse(this.hunter.loc, .05);
+    this.repulse(this.hunter.loc, .03);
   }
   this.steerForces();
   this.vel.add(this.acc);

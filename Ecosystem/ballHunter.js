@@ -10,20 +10,22 @@ function BallHunterClass(x, y, vx, vy, ax, ay, radius, numOrbiters, range, maxSp
   this.range = range;
   this.maxSpeed = maxSpeed;
   this.maxForce = maxForce;
-  //hunting functions
+  //hunting vars
   this.isHunting = false;
   this.preyHunting = null;
   this.wasSpliced = false;
   for(let a = 0; a < numOrbiters; a++){
-    this.orbiter[a] = new Orbiter(4, (2*Math.PI/numOrbiters) * a, .03, radius, range, this);
+    this.orbiter[a] = new Orbiter(5, (2*Math.PI/numOrbiters) * a, .03, radius, range, this);
   }
+  //prey vars
+  this.isDead = false;
 }
 
 //++++++++++++++++++++++++++++++++ animation functions ++++++++++++++++++++++++++++
 BallHunterClass.prototype.render = function(){
   //hunters are green
   ctx.strokStyle = 'rgb(255,105,180)';
-  ctx.fillStyle = 'rgb(94, 235, 52)';
+  ctx.fillStyle = 'hsl(14, 61%, 41%)';
 
   ctx.beginPath()
   ctx.arc(this.loc.x, this.loc.y, this.radius, 2*Math.PI, 0, false);
@@ -33,8 +35,9 @@ BallHunterClass.prototype.render = function(){
 
 BallHunterClass.prototype.update = function(){
   this.vel.add(this.acc);
-  this.vel.limit(15);
+  this.vel.limit(this.maxSpeeds);
   this.loc.add(this.vel);
+  this.acc.setMagnitude(0);
 }
 
 BallHunterClass.prototype.check = function(){
@@ -64,9 +67,9 @@ BallHunterClass.prototype.check = function(){
 }
 
 BallHunterClass.prototype.run = function(flockHunting){
+  this.check();
   this.update();
   this.render();
-  this.check();
   for(let a = 0; a < this.orbiter.length; a++){
     this.orbiter[a].update(flockHunting);
     this.orbiter[a].render();
