@@ -1,18 +1,18 @@
 //ParticleClass: makes individual particles
 
 //++++++++++++++++++++++++++++++++ constructor ++++++++++++++++++++++++++++++++++++
-function ParticleClass(x, y, vx, vy, r, life, color){
+function ParticleClass(x, y, vx, vy, life, color){
   this.loc = new JSVector(x, y);
   this.vel = new JSVector(vx, vy);
-  this.radius = r;
+  this.radius = Math.random()*8 + 4;
   this.life = life;
   this.color = color;
 }
 
 //++++++++++++++++++++++++++++++++ animation functions ++++++++++++++++++++++++++++
 ParticleClass.prototype.render = function(){
-  ctx.strokeStyle = this.color;
-  ctx.fillStyle = this.color;
+  ctx.strokeStyle = 'hsl('this.color')';
+  ctx.fillStyle = 'hsl('this.color')';
 
   ctx.beginPath();
   ctx.arc(this.loc.x, this.loc.y, this.radius, 2*Math.PI, 0, false);
