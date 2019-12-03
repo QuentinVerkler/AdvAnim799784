@@ -9,17 +9,17 @@ function HeadClass(x, y, vx, vy, ax, ay, r, numTail){
   this.tail = [];
     //problem: distance from head to first tail is too short with just radius; *2 is temporary solution
   var opacity = 1;
-  var width = 3*(r/4)
+  var width = 3*(r/4);
   this.tail[0] = new TailClass(this, this, 3*r/5, r/2, opacity, width);
   for(let i = 1; i < numTail; i++){
-    //opacity -= (1/numTail);
-    //width -= (3*(r/4)/numTail)
+
     this.tail[i] = new TailClass(this, this.tail[i-1], this.tail[i-1].length, this.tail[i-1].length, opacity, width);
   }
   this.maxSpeed = 5;
   this.maxForce = .3;
   this.range = 300;
   this.preyHunting = null;
+  this.stopMoving = false;
 }
 
 //++++++++++++++++++++++++++++++++ animation functions ++++++++++++++++++++++++++++
@@ -61,10 +61,14 @@ HeadClass.prototype.check = function(){
 }
 
 HeadClass.prototype.update = function(){
-  this.vel.add(this.acc);
-  this.vel.limit(this.speed);
-  this.loc.add(this.vel);
-  this.acc.setMagnitude(0);
+  if(this.stopMoving){
+    this.acc.setMagnitude(0);
+  }else{
+    this.vel.add(this.acc);
+    this.vel.limit(this.speed);
+    this.loc.add(this.vel);
+    this.acc.setMagnitude(0);
+  }
 }
 
 HeadClass.prototype.run = function(balls){
@@ -78,13 +82,24 @@ HeadClass.prototype.run = function(balls){
 }
 
 //++++++++++++++++++++++++++++++++ head specific functions ++++++++++++++++++++++++
-HeadClass.prototype.hunt = function(balls){
-  for(int i = 0; i < ballHunters.length; i++){
-    if(this.loc.distance(balls[i].loc) < this.range){
-      this.preyHunting = balls[i];
+HeadClass.prototype.hunt = function(balls, preys){
+  if(this.preyHunting === null){
+    for(let i = 0; i < ballHunters.length; i++){
+      if(this.loc.distance(ballHunters[i].loc) < this.range){
+        this.preyHunting = ballHunters[i];
+        break;
+      }
     }
-  }
-  if(this.preyHunting != null){
+    if(this.preyHunting === null){
+      for(let i = 0; i < preyBalls.length; i++){
+        if(this.loc.distance(ballHunters[i].loc) < this.range){
+          this.preyHunting = ballHunters[i];
+          break;
+        }
+      }
+    }
+  }else{
+    this.stopMoving = true;
     this.attractTo();
     if(this.loc.distance(this.preyHunting.loc) < this.radius + this.preyHunting.radius){
       collisionLocX = this.loc.x;
@@ -93,8 +108,14 @@ HeadClass.prototype.hunt = function(balls){
       var collisionEvent = new Event("collide");
       window.dispatchEvent(collisionEvent);
 
+      //resets snake's hunting vars
       this.preyHunting.isDead = true;
       this.preyHunting = null;
+      this.stopMoving = false;
+
+      //adds to tail
+      var front = this.tail.length-1;
+      this.tail.push(new TailClass(this, this.tail[front], this.tail[front].length, this.tail[front].length, 1, 3*(this.radius/4)))
     }
   }
 }
@@ -105,7 +126,7 @@ HeadClass.prototype.attractTo = function (){
   var speed;
   speed = JSVector.subGetNew(this.preyHunting.loc, this.loc);
   speed.normalize();
-  speed.multiply(15);
+  speed.multiply(4);
   this.loc.add(speed);
 }
 

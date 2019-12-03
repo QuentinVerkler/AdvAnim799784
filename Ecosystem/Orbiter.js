@@ -78,6 +78,13 @@ Orbiter.prototype.update = function(flockHunting){
         this.body.isHunting = false;
         this.isHunting = false;
         this.ballHunting = null;
+
+        //pooping
+        collisionLocX = this.loc.x;
+        collisionLocY = this.loc.y;
+
+        var collisionEvent = new Event("collide");
+        window.dispatchEvent(collisionEvent);
       }
       this.angle += this.angleV
   }

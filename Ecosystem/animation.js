@@ -14,14 +14,18 @@ var collisionLocY;
 //creature arrays
 var flock = [];
 var ballHunters = [];
+var preyBalls = [];
 var bed = [];
+
+//particle system array
+var particleSystems = [];
 
 // makes canvas and defines the vars
 function init(){
   //gets canvas
   cnv = document.getElementById('cnv');
   //sets dimensions
-  cnv.width = 1875;
+  cnv.width = 1800;
   cnv.height = 2000;
   cnv.style.border = 'solid black 2x';
   cnv.style.backgroundColor = 'rgba(82, 147, 49, .5)';
@@ -83,7 +87,9 @@ function animate(){
 
   //ballHunters animation
   for(let i = ballHunters.length-1; i >= 0; i--){
-    if(ballHunters[i].isDead){
+    if(ballHunters[i] === null){
+
+    }else if(ballHunters[i].isDead){
       ballHunters.splice(i,1);
     }else {
       ballHunters[i].run(flock);
@@ -93,6 +99,17 @@ function animate(){
   //snake animation
   for(let i = bed.length-1; i >= 0; i--){
     bed[i].run(ballHunters);
+  }
+
+  //all particle system animations
+  for(let i = particleSystems.length-1; i >=0; i--){
+    if(particleSystems[i] === null){
+
+    }else if(particleSystems[i].isDone){
+      particleSystems.splice(i,1);
+    }else{
+      particleSystems[i].run();
+    }
   }
 
 }
@@ -129,12 +146,12 @@ function addHunnter(group){
 //+++++++snake functions+++++++
 function addBed(size, group){
   for(let i = 0; i < size; i++){
-    group[i] = new HeadClass(Math.random()*cnv.width, Math.random()*cnv.height, Math.random()*10-5, Math.random()*10-5, 0, 0, Math.random() * 10 + 12, 15)
+    group[i] = new HeadClass(Math.random()*cnv.width, Math.random()*cnv.height, Math.random()*10-5, Math.random()*10-5, 0, 0, Math.random()*10+12, 15)
   }
 }
-
+//+++++++end snake functions+++++++
 
 //+++++++++++++eventListener functions+++++++++++++++++++++++++
 function poop(collisionEvent){
-
+  particleSystems.push(new ParticleSystem(collisionLocX, collisionLocY, 10, 'hsl(30, 100%, 29%)', Math.random()*50+200));
 }

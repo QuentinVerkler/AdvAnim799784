@@ -21,7 +21,7 @@ function BirdClass(x, y, vx, vy, ax, ay, flock, maxSpeed, maxForce){
 BirdClass.prototype.render = function(){
   ctx.strokeStyle = 'rgba(136, 3, 252, 0)';
   if(!this.isHunted){
-    ctx.fillStyle = 'rgb(170, 57, 57)';
+    ctx.fillStyle = 'hsl(0, 50%, 45%)';
   }else{
     ctx.fillStyle = 'hsl(0, 50%, 45%)';
   }
