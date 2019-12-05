@@ -1,12 +1,13 @@
 //ParticleClass: makes individual particles
 
 //++++++++++++++++++++++++++++++++ constructor ++++++++++++++++++++++++++++++++++++
-function ParticleClass(x, y, vx, vy, life, color){
+function ParticleClass(x, y, vx, vy, life, color, r, poison){
   this.loc = new JSVector(x, y);
   this.vel = new JSVector(vx, vy);
-  this.radius = Math.random()*4 + 4;
+  this.radius = r;
   this.life = life;
   this.color = color;
+  this.isPoison = poison
 }
 
 //++++++++++++++++++++++++++++++++ animation functions ++++++++++++++++++++++++++++
@@ -25,6 +26,19 @@ ParticleClass.prototype.update = function(){
 }
 
 ParticleClass.prototype.run = function(){
+  if(this.isPoison){
+    this.checkPoison();
+  }
   this.update();
   this.render();
+}
+
+//+++++++++++++++++++++++++++++ ParticleClass specific functions ++++++++++++++++++
+ParticleClass.prototype.checkPoison = function(){
+  for(let i = 0; i < bed.length; i++){
+    if(this.loc.distance(bed[i].loc) <= bed[i].radius){
+      this.life = 0;
+      bed[i].removeEnd();
+    }
+  }
 }

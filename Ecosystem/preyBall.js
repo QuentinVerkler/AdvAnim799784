@@ -12,6 +12,8 @@ function PreyBall(x, y, vx, vy, ax, ay, r, maxSpeed, maxForce){
   //prey functions
   this.isHunted = false;
   this.hunter = null;
+  this.decoys = null;
+  this.decoySpawn = 0;
 }
 
 //++++++++++++++++++++++++++++++++ animation functions ++++++++++++++++++++++++++++
@@ -31,9 +33,6 @@ PreyBall.prototype.render = function(){
 }
 
 PreyBall.prototype.update = function(){
-  if(this.isHunted){
-    this.repulse(this.hunter.loc, .03);
-  }
   this.vel.add(this.acc);
   this.vel.limit(this.maxSpeed);
   this.loc.add(this.vel);
@@ -45,23 +44,23 @@ PreyBall.prototype.check = function(){
   if(this.loc.x < 40){
     desire = new JSVector(this.maxSpeed, this.vel.y);
     var steer = JSVector.subGetNew(desire, this.vel);
-    steer.limit(this.maxForce * 1.1);
+    steer.limit(this.maxForce * .8);
     this.addForce(steer);
   }else if(this.loc.x > cnv.width - 40){
     desire = new JSVector(-this.maxSpeed, this.vel.y);
     var steer = JSVector.subGetNew(desire, this.vel);
-    steer.limit(this.maxForce * 1.1);
+    steer.limit(this.maxForce * .8);
     this.addForce(steer);
   }
   if(this.loc.y < 40){
     desire = new JSVector(this.vel.x, this.maxSpeed);
     var steer = JSVector.subGetNew(desire, this.vel);
-    steer.limit(this.maxForce * 1.1);
+    steer.limit(this.maxForce * .8);
     this.addForce(steer);
   }else if (this.loc.y > cnv.height - 40) {
     desire = new JSVector(this.vel.x, -this.maxSpeed);
     var steer = JSVector.subGetNew(desire, this.vel);
-    steer.limit(this.maxForce * 1.1);
+    steer.limit(this.maxForce * .8);
     this.addForce(steer);
   }
 }
@@ -70,13 +69,36 @@ PreyBall.prototype.run = function(){
   this.check();
   this.update();
   this.render();
+  if(this.isHunted){
+    this.defense();
+  }else{
+    this.decoys = null;
+  }
 }
 
 //++++++++++++++++++++++++++++++++ PreyBall functions +++++++++++++++++++++++++++++
-BirdClass.prototype.repulse = function(loc, mag){
+PreyBall.prototype.defense = function(){
+  if(this.decoys === null){
+    this.decoys = new ParticleSystem(this.loc.x, this.loc.y, 15, 'hsl(265, 61%, 21%)', Math.random()*2 + 2, true);
+    particleSystems.push(this.decoys);
+  }else{
+    if(this.decoySpawn === 15){
+      this.decoys.particles.push(new ParticleClass(this.loc.x, this.loc.y, Math.random()*4-2, Math.random()*4-2, Math.random()*150+200, 'hsl(265, 61%, 21%)', Math.random()*2 + 2, true));
+      this.decoySpawn = 0;
+    }else{
+      this.decoySpawn += 1;
+    }
+  }
+}
+
+PreyBall.prototype.repulse = function(loc, mag){
   var force;
   force = JSVector.subGetNew(this.loc, loc);
   force.normalize();
   force.multiply(mag);
+  this.acc.add(force);
+}
+
+PreyBall.prototype.addForce = function(force){
   this.acc.add(force);
 }

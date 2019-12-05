@@ -1,12 +1,12 @@
 //a class that makes particle systems
 
 //++++++++++++++++++++++++++++++++ constructor ++++++++++++++++++++++++++++++++++++
-function ParticleSystem(x, y, size, color, life){
+function ParticleSystem(x, y, size, color, r, poison){
   this.particles = [];
   //color must be hsl
   this.color = color;
   for(let i = 0; i < size; i++){
-    this.particles[i] = new ParticleClass(x, y, Math.random()*4-2, Math.random()*4-2, life, color);
+    this.particles[i] = new ParticleClass(x, y, Math.random()*4-2, Math.random()*4-2, Math.random()*150+200, color, r, poison);
   }
   this.isDone = false;
 }

@@ -19,6 +19,7 @@ function HeadClass(x, y, vx, vy, ax, ay, r, numTail){
   this.maxForce = .3;
   this.range = 300;
   this.preyHunting = null;
+  this.isPreyBall = false;
   this.stopMoving = false;
 }
 
@@ -62,7 +63,7 @@ HeadClass.prototype.check = function(){
 
 HeadClass.prototype.update = function(){
   if(this.stopMoving){
-    this.acc.setMagnitude(0);
+   this.acc.setMagnitude(0);
   }else{
     this.vel.add(this.acc);
     this.vel.limit(this.speed);
@@ -82,7 +83,7 @@ HeadClass.prototype.run = function(balls){
 }
 
 //++++++++++++++++++++++++++++++++ head specific functions ++++++++++++++++++++++++
-HeadClass.prototype.hunt = function(balls, preys){
+HeadClass.prototype.hunt = function(){
   if(this.preyHunting === null){
     for(let i = 0; i < ballHunters.length; i++){
       if(this.loc.distance(ballHunters[i].loc) < this.range){
@@ -90,32 +91,50 @@ HeadClass.prototype.hunt = function(balls, preys){
         break;
       }
     }
-    if(this.preyHunting === null){
-      for(let i = 0; i < preyBalls.length; i++){
-        if(this.loc.distance(ballHunters[i].loc) < this.range){
-          this.preyHunting = ballHunters[i];
-          break;
-        }
+  }
+  if(this.preyHunting === null){
+    for(let i = 0; i < preyBalls.length; i++){
+      if(this.loc.distance(preyBalls[i].loc) < this.range){
+        this.preyHunting = preyBalls[i];
+        this.preyHunting.isHunted = true;
+        this.isPreyBall = true;
+        break;
       }
     }
-  }else{
-    this.stopMoving = true;
-    this.attractTo();
-    if(this.loc.distance(this.preyHunting.loc) < this.radius + this.preyHunting.radius){
-      collisionLocX = this.loc.x;
-      collisionLocY = this.loc.y;
+  }
+  if(this.preyHunting != null){
+    if(!this.isPreyBall){
+      if(this.loc.distance(this.preyHunting.loc) > this.range + this.radius + 20){
+        this.preyHunting = null;
+      }else{
+        this.stopMoving = true;
+        this.attractTo();
+        if(this.loc.distance(this.preyHunting.loc) < this.radius + this.preyHunting.radius){
+          collisionLocX = this.loc.x;
+          collisionLocY = this.loc.y;
 
-      var collisionEvent = new Event("collide");
-      window.dispatchEvent(collisionEvent);
+          var collisionEvent = new Event("poop");
+          window.dispatchEvent(collisionEvent);
 
-      //resets snake's hunting vars
-      this.preyHunting.isDead = true;
-      this.preyHunting = null;
-      this.stopMoving = false;
+          //resets snake's hunting vars
+          this.preyHunting.isDead = true;
+          this.preyHunting = null;
+          this.stopMoving = false;
 
-      //adds to tail
-      var front = this.tail.length-1;
-      this.tail.push(new TailClass(this, this.tail[front], this.tail[front].length, this.tail[front].length, 1, 3*(this.radius/4)))
+          //adds to tail
+          var front = this.tail.length-1;
+          this.tail.push(new TailClass(this, this.tail[front], this.tail[front].length, this.tail[front].length, 1, 3*(this.radius/4)));
+        }
+      }
+    }else if(this.loc.distance(this.preyHunting.loc) < 400){
+      if(this.loc.distance(this.preyHunting.loc) > this.range + this.radius + 20){
+        this.isPreyBall = false;
+        this.preyHunting.isHunted = false;
+        this.preyHunting = null;
+      }else{
+        this.preyHunting.repulse(this.loc, .09);
+        this.repulse(this.preyHunting.loc, .09);
+      }
     }
   }
 }
@@ -130,6 +149,20 @@ HeadClass.prototype.attractTo = function (){
   this.loc.add(speed);
 }
 
+//repulses this snake
+HeadClass.prototype.repulse = function(loc, mag){
+  var force;
+  force = JSVector.subGetNew(this.loc, loc);
+  force.normalize();
+  force.multiply(mag);
+  this.acc.add(force);
+}
+
 HeadClass.prototype.addForce = function(force){
   this.acc.add(force);
+}
+
+//removes last segment of tail
+HeadClass.prototype.removeEnd = function(){
+  this.tail.splice(this.tail.length - 1, 1);
 }

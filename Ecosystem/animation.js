@@ -1,7 +1,7 @@
 window.onload = init;
 
 //+++++++event listeners+++++++++
-window.addEventListener("collide", poop);
+window.addEventListener("poop", poop);
 
 //canvas and context variables
 var cnv;
@@ -19,6 +19,10 @@ var bed = [];
 
 //particle system array
 var particleSystems = [];
+
+//respawn times
+var flockRespawnTime = 0;
+var hunterRespawnTime = 0;
 
 // makes canvas and defines the vars
 function init(){
@@ -57,6 +61,8 @@ function init(){
 
   addBed(2, bed);
 
+  addPreyGroup(4, preyBalls);
+
   animate();
 }
 
@@ -70,6 +76,23 @@ function animate(){
 	var sep = document.getElementById("sep").value;
 	var align = document.getElementById("align").value;
 	var coh = document.getElementById("coh").value;
+
+  //respawn timer add
+  flockRespawnTime += 1;
+  hunterRespawnTime += 1;
+
+  //+++++respawn+++++
+  //flock respawn
+  if(flock.length < 101 && flockRespawnTime >= 300){
+    addBird(flock);
+    flockRespawnTime = 0;
+  }
+
+  //hunter respawn
+  if(ballHunters.length < 21 && hunterRespawnTime >= 600){
+    addHunter(ballHunters);
+    hunterRespawnTime = 0;
+  }
 
   //flock animation
   for(let i = flock.length-1; i >= 0; i--){
@@ -98,7 +121,12 @@ function animate(){
 
   //snake animation
   for(let i = bed.length-1; i >= 0; i--){
-    bed[i].run(ballHunters);
+    bed[i].run();
+  }
+
+  //PreyBall animation
+  for(let i = preyBalls.length-1; i >= 0; i--){
+    preyBalls[i].run()
   }
 
   //all particle system animations
@@ -113,6 +141,8 @@ function animate(){
   }
 
 }
+
+
 
 //+++++++flock functions+++++++
 //creates flocks
@@ -136,11 +166,9 @@ function addHuntingGroup(size, group){
 }
 
 //adds hunter to group
-function addHunnter(group){
+function addHunter(group){
   group.push(new BallHunterClass(Math.random()*cnv.width, Math.random()*cnv.height, Math.random()*6-3, Math.random()*6-3, 0, 0, Math.random()*15+12, Math.ceil(Math.random()*6), 200, 5, .3));
 }
-
-
 //+++++++end ballHunter functions+++++++
 
 //+++++++snake functions+++++++
@@ -151,7 +179,21 @@ function addBed(size, group){
 }
 //+++++++end snake functions+++++++
 
+//+++++++PreyBall functions+++++++
+//fill new preyBall array
+function addPreyGroup(size, group){
+  for(let i = 0; i < size; i++){
+    group[i] = new PreyBall(Math.random()*cnv.width, Math.random()*cnv.height, Math.random()*6-3, Math.random()*6-3, 0, 0, Math.random()*15+8, 5, .3);
+  }
+}
+
+//add preyBall
+function addPreyBall(group){
+  group.push(new PreyBall(Math.random()*cnv.width, Math.random()*cnv.height, Math.random()*6-3, Math.random()*6-3, 0, 0, Math.random()*15+8, 5, .3));
+}
+//+++++++end PreyBAll functions+++++++
+
 //+++++++++++++eventListener functions+++++++++++++++++++++++++
 function poop(collisionEvent){
-  particleSystems.push(new ParticleSystem(collisionLocX, collisionLocY, 10, 'hsl(30, 100%, 29%)', Math.random()*50+200));
+  particleSystems.push(new ParticleSystem(collisionLocX, collisionLocY, 10, 'hsl(30, 100%, 29%)', Math.random()*4 + 4, false));
 }
