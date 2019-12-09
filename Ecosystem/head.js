@@ -21,6 +21,7 @@ function HeadClass(x, y, vx, vy, ax, ay, r, numTail){
   this.preyHunting = null;
   this.isPreyBall = false;
   this.stopMoving = false;
+  this.eatRest = 0;
 }
 
 //++++++++++++++++++++++++++++++++ animation functions ++++++++++++++++++++++++++++
@@ -62,11 +63,12 @@ HeadClass.prototype.check = function(){
 }
 
 HeadClass.prototype.update = function(){
+  this.eatRest -= 1;
   if(this.stopMoving){
    this.acc.setMagnitude(0);
   }else{
     this.vel.add(this.acc);
-    this.vel.limit(this.speed);
+    this.vel.limit(this.maxSpeed);
     this.loc.add(this.vel);
     this.acc.setMagnitude(0);
   }
@@ -84,7 +86,7 @@ HeadClass.prototype.run = function(balls){
 
 //++++++++++++++++++++++++++++++++ head specific functions ++++++++++++++++++++++++
 HeadClass.prototype.hunt = function(){
-  if(this.preyHunting === null){
+  if(this.preyHunting === null && this.eatRest <= 0){
     for(let i = 0; i < ballHunters.length; i++){
       if(this.loc.distance(ballHunters[i].loc) < this.range){
         this.preyHunting = ballHunters[i];
@@ -92,7 +94,7 @@ HeadClass.prototype.hunt = function(){
       }
     }
   }
-  if(this.preyHunting === null){
+  if(this.preyHunting === null && this.eatRest <= 0){
     for(let i = 0; i < preyBalls.length; i++){
       if(this.loc.distance(preyBalls[i].loc) < this.range){
         this.preyHunting = preyBalls[i];
@@ -120,6 +122,7 @@ HeadClass.prototype.hunt = function(){
           this.preyHunting.isDead = true;
           this.preyHunting = null;
           this.stopMoving = false;
+          this.eatRest = 600;
 
           //adds to tail
           var front = this.tail.length-1;

@@ -1,29 +1,38 @@
-//bird class: makes different flocks
+//MaterClass: a class that makes maters
 
 //++++++++++++++++++++++++++++++++ constructor ++++++++++++++++++++++++++++++++++++
-function BirdClass(x, y, vx, vy, ax, ay, flock, maxSpeed, maxForce){
+function Mater(x, y, vx, vy, ax, ay, flock, size){
   this.loc = new JSVector(x, y);
   this.vel = new JSVector(vx, vy);
   this.acc = new JSVector(ax, ay);
   this.flock = flock;
-  this.maxSpeed = maxSpeed;
-  this.maxForce = maxForce;
+  this.maxSpeed = 5;
+  this.maxForce = .3;
+  //flock variables
   this.alignDist = .0001;
   this.cohDist = .0001;
   this.sepDist = .0001;
-  //prey part
+  //mater specific variables
   this.lifeSpan = 500;
   this.isHunted = false;
   this.hunter = null;
+  this.mater = null;
+  this.size = size;
+  this.mateRest = Math.random()*300 + 60;
 }
 
 //++++++++++++++++++++++++++++++++ animation functions ++++++++++++++++++++++++++++
-BirdClass.prototype.render = function(){
-  ctx.strokeStyle = 'rgba(136, 3, 252, 0)';
+Mater.prototype.render = function(){
+  //makes it bigger if not full adult
+  if(this.size < 1){
+    this.size += .00125;
+  }
+  ctx.lineWidth = '.0001'
+  ctx.strokeStyle = 'hsl(235, 100%, 50%)';
   if(!this.isHunted){
-    ctx.fillStyle = 'hsl(0, 50%, 45%)';
+    ctx.fillStyle = 'hsl(235, 100%, 50%)';
   }else{
-    ctx.fillStyle = 'hsl(117, 100%, 14%)';
+    ctx.fillStyle = 'hsl(88, 50%, 41%)';
   }
 
   ctx.save();
@@ -32,37 +41,34 @@ BirdClass.prototype.render = function(){
   ctx.rotate(this.vel.getDirection() - Math.PI/2);
 
   ctx.beginPath();
-  ctx.moveTo(-9 * (2 / 3), -12 * (2 / 3));
-  ctx.lineTo(0, 15 * (2 / 3));
-
-  ctx.lineTo(9 * (2 / 3), -12 * (2 / 3));
-
-
-  ctx.lineTo(0, -3 * (2 / 3));
-  ctx.lineTo(-9 * (2 / 3), -12 * (2 / 3));
+  ctx.moveTo(0, 5);
+  ctx.lineTo(3, 0);
+  ctx.lineTo(0, -5);
+  ctx.lineTo(-3, 0);
+  ctx.lineTo(0, 5);
   ctx.closePath();
+
   ctx.stroke();
   ctx.fill();
 
   ctx.restore();
 }
 
-BirdClass.prototype.update = function(){
+Mater.prototype.update = function(){
   if(this.isHunted && this.lifeSpan >= 500){
     this.repulse(this.hunter.loc, .03);
   }
-  if(this.hunter != null && this.hunter.isDead){
-    this.hunter = false;
-    this.isHunted = false;
+  if(this.mater === null){
+    this.steerForces();
   }
-  this.steerForces();
+  this.mateRest -= .5;
   this.vel.add(this.acc);
   this.vel.limit(this.maxSpeed);
   this.loc.add(this.vel);
   this.acc.setMagnitude(0);
 }
 
-BirdClass.prototype.check = function(){
+Mater.prototype.check = function(){
   var desire;
   if(this.loc.x < 40){
     desire = new JSVector(this.maxSpeed, this.vel.y);
@@ -88,28 +94,83 @@ BirdClass.prototype.check = function(){
   }
 }
 
-BirdClass.prototype.run = function(){
+Mater.prototype.run = function(){
   this.check();
   this.update();
   this.render();
+  this.mate();
 
 }
 
-//++++++++++++++++++++++++++++++++ Bird functions +++++++++++++++++++++++++++++++++
-//this is all of the forces
-BirdClass.prototype.steerForces = function(){
+
+//++++++++++++++++++++++++++++++++ Mater functions ++++++++++++++++++++++++++++++++
+Mater.prototype.steerForces = function(){
   this.separation();
   this.alignment();
   this.cohesion();
 }
 
 //adds force to acc
-BirdClass.prototype.addForce = function(force){
+Mater.prototype.addForce = function(force){
   this.acc.add(force);
 }
 
+//mating function: will attract this mater and target mater, then make babies
+Mater.prototype.mate = function(){
+  if(this.mater === null && !this.isHunted && this.mateRest <= 0 && this.flock.length <= 100){
+    for(let i = 0; i < this.flock.length; i++){
+      if(this.loc.distance(this.flock[i].loc) <= 150 && this.loc.distance(this.flock[i].loc) > 0 && !this.flock[i].isHunted && this.flock[i].mateRest <= 0){
+        this.mater = this.flock[i];
+        this.mater.mater = this;
+      }
+    }
+  }else if(this.mater != null && (this.lifeSpan <= 0 || this.isHunted || this.mater.isHunt)){
+    this.mater.mater = null;
+    this.mater = null;
+  }else if(this.mater != null){
+    if(this.loc.distance(this.mater.loc) >= 8){
+      this.attractTo();
+      this.mater.attractTo();
+
+      //draws line between the maters
+      ctx.beginPath();
+      ctx.linewidth = '1';
+      ctx.moveTo(this.loc.x, this.loc.y);
+      ctx.lineTo(this.mater.loc.x, this.mater.loc.y);
+      ctx.stroke();
+      ctx.closePath();
+    }else{
+      //makes particleSystem when they mate
+      collisionLocX = this.loc.x;
+      collisionLocY = this.loc.y;
+
+      var collisionEvent = new Event("madeBabies");
+      window.dispatchEvent(collisionEvent);
+
+      //resets everything and gives cooldown period for mating
+      this.mateRest = 600;
+      this.mater.mateRest = 600;
+      this.flock.push(new Mater(this.loc.x, this.loc.y, Math.random()*6-3, Math.random()*6-3, 0, 0, this.flock, .5));
+      this.mater.mater = null;
+      this.mater = null;
+    }
+  }
+}
+
+//attractTo; draws this mater to target mater
+Mater.prototype.attractTo = function(){
+  if(this.mater != null){
+    var speed;
+    speed = JSVector.subGetNew(this.mater.loc, this.loc);
+    speed.normalize();
+    speed.multiply(1);
+    speed.limit(this.maxSpeed);
+    this.loc.add(speed);  
+  }
+}
+
 //separation function
-BirdClass.prototype.separation = function(){
+Mater.prototype.separation = function(){
   var sum = new JSVector(0, 0);
   var count = 0;
   for(let i = 0; i < this.flock.length; i++){
@@ -134,7 +195,7 @@ BirdClass.prototype.separation = function(){
 }
 
 //alignment function
-BirdClass.prototype.alignment = function(){
+Mater.prototype.alignment = function(){
   var sum = new JSVector(0, 0);
   var count = 0;
   for(let i = 0; i < this.flock.length; i++){
@@ -155,7 +216,7 @@ BirdClass.prototype.alignment = function(){
 }
 
 //special seek function for cohesion
-BirdClass.prototype.seekCoh = function(v1){
+Mater.prototype.seekCoh = function(v1){
   var desired = JSVector.subGetNew(v1, this.loc);
   desired.normalize();
   desired.multiply(this.maxSpeed);
@@ -165,7 +226,7 @@ BirdClass.prototype.seekCoh = function(v1){
 }
 
 //cohesion function
-BirdClass.prototype.cohesion = function(){
+Mater.prototype.cohesion = function(){
   var sum = new JSVector(0, 0);
   var count = 0;
   for(let i = 0; i < this.flock.length; i++){
@@ -182,7 +243,7 @@ BirdClass.prototype.cohesion = function(){
 }
 
 //this function will repulse bird if ballprey too close
-BirdClass.prototype.repulse = function(loc, mag){
+Mater.prototype.repulse = function(loc, mag){
   var force;
   force = JSVector.subGetNew(this.loc, loc);
   force.normalize();

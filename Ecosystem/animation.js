@@ -1,7 +1,10 @@
 window.onload = init;
 
+//NOTES FOR NEXT CLASS: add maters to ballhunter prey search
+
 //+++++++event listeners+++++++++
 window.addEventListener("poop", poop);
+window.addEventListener("madeBabies", madeBabies);
 
 //canvas and context variables
 var cnv;
@@ -16,6 +19,7 @@ var flock = [];
 var ballHunters = [];
 var preyBalls = [];
 var bed = [];
+var maters = [];
 
 //particle system array
 var particleSystems = [];
@@ -29,7 +33,7 @@ function init(){
   //gets canvas
   cnv = document.getElementById('cnv');
   //sets dimensions
-  cnv.width = 1800;
+  cnv.width = 900;
   cnv.height = 2000;
   cnv.style.border = 'solid black 2x';
   cnv.style.backgroundColor = 'rgba(82, 147, 49, .5)';
@@ -63,6 +67,8 @@ function init(){
 
   addPreyGroup(4, preyBalls);
 
+  addMaterGroup(10, maters);
+
   animate();
 }
 
@@ -89,9 +95,14 @@ function animate(){
   }
 
   //hunter respawn
-  if(ballHunters.length < 21 && hunterRespawnTime >= 600){
+  if((ballHunters.length < 21) && (hunterRespawnTime >= 600 || ballHunters.length < 5)){
     addHunter(ballHunters);
     hunterRespawnTime = 0;
+  }
+
+  //mater respawn
+  if(maters.length < 10){
+    addMater(maters);
   }
 
   //flock animation
@@ -127,6 +138,20 @@ function animate(){
   //PreyBall animation
   for(let i = preyBalls.length-1; i >= 0; i--){
     preyBalls[i].run()
+  }
+
+  //maters animation
+  for(let i = maters.length-1; i >= 0; i--){
+    if(maters[i] === null){
+
+    }else if(maters[i].lifeSpan <= 0){
+      maters.splice(i, 1);
+    }else{
+      maters[i].sepDist = sep;
+      maters[i].alignDist = align;
+      maters[i].cohDist = coh;
+      maters[i].run();
+    }
   }
 
   //all particle system animations
@@ -193,7 +218,26 @@ function addPreyBall(group){
 }
 //+++++++end PreyBAll functions+++++++
 
+//+++++++Mater functions+++++++
+//fills new Mater array
+function addMaterGroup(size, group){
+  for(let i = 0; i < size; i++){
+    group[i] = new Mater(Math.random()*cnv.width, Math.random()*cnv.height, Math.random()*6-3, Math.random()*6-3, 0, 0, group, 1);
+  }
+}
+
+//adds a mater
+function addMater(group){
+  group.push(new Mater(Math.random()*cnv.width, Math.random()*cnv.height, Math.random()*6-3, Math.random()*6-3, 0, 0, group, 1));
+}
+
+//+++++++end Mater functions+++++++
+
 //+++++++++++++eventListener functions+++++++++++++++++++++++++
 function poop(collisionEvent){
-  particleSystems.push(new ParticleSystem(collisionLocX, collisionLocY, 10, 'hsl(30, 100%, 29%)', Math.random()*4 + 4, false));
+  particleSystems.push(new ParticleSystem(collisionLocX, collisionLocY, 10, 'hsl(30, 100%, 29%)', Math.random()*3 + 3, false));
+}
+
+function madeBabies(collisionEvent){
+  particleSystems.push(new ParticleSystem(collisionLocX, collisionLocY, 15, 'hsl(40, 55%, 62%)', Math.random()*2 + 2, false));
 }

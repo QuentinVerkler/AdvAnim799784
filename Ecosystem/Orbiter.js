@@ -68,6 +68,7 @@ Orbiter.prototype.update = function(flockHunting){
           this.return();
           this.ballHunting.loc = this.loc.copy();
         }else{
+          this.ballHunting.isHunted = false;
           this.loc = this.body.loc.copy();
           this.ballHunting.loc = this.loc.copy();
           this.ballHunting.lifeSpan -= 2;
