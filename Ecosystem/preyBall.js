@@ -14,6 +14,7 @@ function PreyBall(x, y, vx, vy, ax, ay, r, maxSpeed, maxForce){
   this.hunter = null;
   this.decoys = null;
   this.decoySpawn = 0;
+  this.isDead = false;
 }
 
 //++++++++++++++++++++++++++++++++ animation functions ++++++++++++++++++++++++++++
@@ -74,6 +75,7 @@ PreyBall.prototype.run = function(){
   }else{
     this.decoys = null;
   }
+  this.checkSuicide();
 }
 
 //++++++++++++++++++++++++++++++++ PreyBall functions +++++++++++++++++++++++++++++
@@ -101,4 +103,18 @@ PreyBall.prototype.repulse = function(loc, mag){
 
 PreyBall.prototype.addForce = function(force){
   this.acc.add(force);
+}
+
+//checks if a suicide creature is near and runs away if it is
+PreyBall.prototype.checkSuicide = function(){
+  for(let i = suicideSquad.length-1; i >= 0; i--){
+    var distance = this.loc.distance(suicideSquad[i].loc);
+    if(distance <= 200){
+      suicideSquad[i].repulse(this.loc, .1);
+    }
+    if(distance <= this.radius + 5){
+      this.isDead = true;
+      suicideSquad[i].isDead = true;
+    }
+  }
 }

@@ -7,7 +7,7 @@ function Mater(x, y, vx, vy, ax, ay, flock, size){
   this.acc = new JSVector(ax, ay);
   this.flock = flock;
   this.maxSpeed = 5;
-  this.maxForce = .3;
+  this.maxForce = .2;
   //flock variables
   this.alignDist = .0001;
   this.cohDist = .0001;
@@ -18,7 +18,7 @@ function Mater(x, y, vx, vy, ax, ay, flock, size){
   this.hunter = null;
   this.mater = null;
   this.size = size;
-  this.mateRest = Math.random()*300 + 60;
+  this.mateRest = Math.random()*240 + 60;
 }
 
 //++++++++++++++++++++++++++++++++ animation functions ++++++++++++++++++++++++++++
@@ -61,7 +61,7 @@ Mater.prototype.update = function(){
   if(this.mater === null){
     this.steerForces();
   }
-  this.mateRest -= .5;
+  this.mateRest -= 1;
   this.vel.add(this.acc);
   this.vel.limit(this.maxSpeed);
   this.loc.add(this.vel);
@@ -148,8 +148,8 @@ Mater.prototype.mate = function(){
       window.dispatchEvent(collisionEvent);
 
       //resets everything and gives cooldown period for mating
-      this.mateRest = 600;
-      this.mater.mateRest = 600;
+      this.mateRest = 400;
+      this.mater.mateRest = 400;
       this.flock.push(new Mater(this.loc.x, this.loc.y, Math.random()*6-3, Math.random()*6-3, 0, 0, this.flock, .5));
       this.mater.mater = null;
       this.mater = null;
@@ -164,8 +164,8 @@ Mater.prototype.attractTo = function(){
     speed = JSVector.subGetNew(this.mater.loc, this.loc);
     speed.normalize();
     speed.multiply(1);
-    speed.limit(this.maxSpeed);
-    this.loc.add(speed);  
+    speed.limit(this.maxForce);
+    this.loc.add(speed);
   }
 }
 

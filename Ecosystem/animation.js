@@ -5,6 +5,7 @@ window.onload = init;
 //+++++++event listeners+++++++++
 window.addEventListener("poop", poop);
 window.addEventListener("madeBabies", madeBabies);
+window.addEventListener("explode", explode);
 
 //canvas and context variables
 var cnv;
@@ -20,6 +21,7 @@ var ballHunters = [];
 var preyBalls = [];
 var bed = [];
 var maters = [];
+var suicideSquad = [];
 
 //particle system array
 var particleSystems = [];
@@ -68,6 +70,8 @@ function init(){
   addPreyGroup(4, preyBalls);
 
   addMaterGroup(10, maters);
+
+  addSuicideGroup(3, suicideSquad);
 
   animate();
 }
@@ -126,18 +130,30 @@ function animate(){
     }else if(ballHunters[i].isDead){
       ballHunters.splice(i,1);
     }else {
-      ballHunters[i].run(flock);
+      ballHunters[i].run();
     }
   }
 
   //snake animation
   for(let i = bed.length-1; i >= 0; i--){
-    bed[i].run();
+    if(bed[i] === null){
+
+    }else if(bed[i].isDead){
+      bed.splice(i, 1);
+    }else{
+      bed[i].run();
+    }
   }
 
   //PreyBall animation
   for(let i = preyBalls.length-1; i >= 0; i--){
-    preyBalls[i].run()
+    if(preyBalls[i] === null){
+
+    }else if(preyBalls[i].isDead){
+      preyBalls.splice(i, 1);
+    }else{
+      preyBalls[i].run();
+    }
   }
 
   //maters animation
@@ -151,6 +167,17 @@ function animate(){
       maters[i].alignDist = align;
       maters[i].cohDist = coh;
       maters[i].run();
+    }
+  }
+
+  //Suicide animation
+  for(let i = suicideSquad.length-1; i >= 0; i--){
+    if(suicideSquad[i] === null){
+
+    }else if(suicideSquad[i].doSplice){
+      suicideSquad.splice(i, 1);
+    }else{
+      suicideSquad[i].run();
     }
   }
 
@@ -216,7 +243,7 @@ function addPreyGroup(size, group){
 function addPreyBall(group){
   group.push(new PreyBall(Math.random()*cnv.width, Math.random()*cnv.height, Math.random()*6-3, Math.random()*6-3, 0, 0, Math.random()*15+8, 5, .3));
 }
-//+++++++end PreyBAll functions+++++++
+//+++++++end PreyBall functions+++++++
 
 //+++++++Mater functions+++++++
 //fills new Mater array
@@ -233,6 +260,18 @@ function addMater(group){
 
 //+++++++end Mater functions+++++++
 
+//+++++++Suicide functions+++++++
+function addSuicideGroup(size, group){
+  for(let i = 0; i < size; i++){
+    group[i] = new SuicideClass(Math.random()*cnv.width, Math.random()*cnv.height, Math.random()*6-3, Math.random()*6-3, 0, 0);
+  }
+}
+
+function addSuicider(group){
+  group.push(new SuicideClass(Math.random()*cnv.width, Math.random()*cnv.height, Math.random()*6-3, Math.random()*6-3, 0, 0));
+}
+//+++++++end Suicide functions+++++++
+
 //+++++++++++++eventListener functions+++++++++++++++++++++++++
 function poop(collisionEvent){
   particleSystems.push(new ParticleSystem(collisionLocX, collisionLocY, 10, 'hsl(30, 100%, 29%)', Math.random()*3 + 3, false));
@@ -240,4 +279,8 @@ function poop(collisionEvent){
 
 function madeBabies(collisionEvent){
   particleSystems.push(new ParticleSystem(collisionLocX, collisionLocY, 15, 'hsl(40, 55%, 62%)', Math.random()*2 + 2, false));
+}
+
+function explode(collisionEvent){
+  particleSystems.push(new ParticleSystem(collisionLocX, collisionLocY, 30, 'hsl(4, 0%, 0%)', Math.random()*2 + 1, false));
 }

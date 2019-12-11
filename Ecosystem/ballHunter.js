@@ -66,14 +66,15 @@ BallHunterClass.prototype.check = function(){
   }
 }
 
-BallHunterClass.prototype.run = function(flockHunting){
+BallHunterClass.prototype.run = function(){
   this.check();
   this.update();
   this.render();
   for(let a = 0; a < this.orbiter.length; a++){
-    this.orbiter[a].update(flockHunting);
+    this.orbiter[a].update();
     this.orbiter[a].render();
   }
+  this.checkSuicide();
 }
 
 //++++++++++++++++++++++++++++++++ Ball specific functions ++++++++++++++++++++++++
@@ -97,4 +98,18 @@ BallHunterClass.prototype.repulse = function(loc, mag){
 
 BallHunterClass.prototype.addForce = function(force){
   this.acc.add(force);
+}
+
+//checks if a suicide creature is near and runs away if it is
+BallHunterClass.prototype.checkSuicide = function(){
+  for(let i = suicideSquad.length-1; i >= 0; i--){
+    var distance = this.loc.distance(suicideSquad[i].loc);
+    if(distance <= 200){
+      suicideSquad[i].repulse(this.loc, .05);
+    }
+    if(distance <= this.radius + 5){
+      this.isDead = true;
+      suicideSquad[i].isDead = true;
+    }
+  }
 }

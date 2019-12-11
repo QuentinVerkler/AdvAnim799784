@@ -22,6 +22,8 @@ function HeadClass(x, y, vx, vy, ax, ay, r, numTail){
   this.isPreyBall = false;
   this.stopMoving = false;
   this.eatRest = 0;
+  this.running = false;
+  this.isDead = false;
 }
 
 //++++++++++++++++++++++++++++++++ animation functions ++++++++++++++++++++++++++++
@@ -81,7 +83,10 @@ HeadClass.prototype.run = function(balls){
   for(let i = 0; i < this.tail.length; i++){
     this.tail[i].run();
   }
-  this.hunt(balls);
+  this.checkSuicide();
+  if(!this.running){
+    this.hunt();
+  }
 }
 
 //++++++++++++++++++++++++++++++++ head specific functions ++++++++++++++++++++++++
@@ -168,4 +173,18 @@ HeadClass.prototype.addForce = function(force){
 //removes last segment of tail
 HeadClass.prototype.removeEnd = function(){
   this.tail.splice(this.tail.length - 1, 1);
+}
+
+//checks if a suicide creature is near and runs away if it is
+HeadClass.prototype.checkSuicide = function(){
+  for(let i = suicideSquad.length-1; i >= 0; i--){
+    var distance = this.loc.distance(suicideSquad[i].loc);
+    if(distance <= 200){
+      suicideSquad[i].repulse(this.loc, .05);
+    }
+    if(distance <= this.radius + 5){
+      this.isDead = true;
+      suicideSquad[i].isDead = true;
+    }
+  }
 }

@@ -33,20 +33,34 @@ Orbiter.prototype.render = function(){
 
 
 //actual update function: work in progress
-Orbiter.prototype.update = function(flockHunting){
+Orbiter.prototype.update = function(){
   //++++hunting part++++
   //if the ball does not have a target, it will look for a target
+
   if(this.body.preyHunting === null){
-    for(let i = flockHunting.length - 1; i >= 0; i--){
-      if(flockHunting[i].isHunted === false && this.body.loc.distance(flockHunting[i].loc) < this.range && this.body.isHunting === false){
-        this.body.preyHunting = flockHunting[i];
+    //this is the starting indexis of the array
+    var iFlock = flock.length-1;
+    var iMater = maters.length-1;
+    while(iFlock >= 0 || iMater >= 0){
+      if(iFlock >= 0 && flock[iFlock].isHunted == false && this.body.loc.distance(flock[iFlock].loc) < this.range && this.body.isHunting === false){
+        this.body.preyHunting = flock[iFlock];
         this.body.isHunting = true;
         this.isHunting = true;
-        this.ballHunting = flockHunting[i];
-        flockHunting[i].isHunted = true;
-        flockHunting[i].hunter = this.body;
+        this.ballHunting = flock[iFlock];
+        flock[iFlock].isHunted = true;
+        flock[iFlock].hunter = this.body;
+        break;
+      }else if(iMater >= 0 && maters[iMater].isHunted == false && this.body.loc.distance(maters[iMater].loc) < this.range && this.body.isHunting === false){
+        this.body.preyHunting = maters[iMater];
+        this.body.isHunting = true;
+        this.isHunting = true;
+        this.ballHunting = maters[iMater];
+        maters[iMater].isHunted = true;
+        maters[iMater].hunter = this.body;
         break;
       }
+      iFlock -= 1;
+      iMater -= 1;
     }
   }
 
