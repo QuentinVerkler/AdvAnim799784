@@ -99,16 +99,18 @@ HeadClass.prototype.hunt = function(){
       }
     }
   }
-  if(this.preyHunting === null && this.eatRest <= 0){
-    for(let i = 0; i < preyBalls.length; i++){
-      if(this.loc.distance(preyBalls[i].loc) < this.range){
-        this.preyHunting = preyBalls[i];
-        this.preyHunting.isHunted = true;
-        this.isPreyBall = true;
-        break;
-      }
-    }
-  }
+
+  // if(this.preyHunting === null && this.eatRest <= 0){
+  //   for(let i = 0; i < preyBalls.length; i++){
+  //     if(this.loc.distance(preyBalls[i].loc) < this.range){
+  //       this.preyHunting = preyBalls[i];
+  //       this.preyHunting.isHunted = true;
+  //       this.isPreyBall = true;
+  //       break;
+  //     }
+  //   }
+  // }
+
   if(this.preyHunting != null){
     if(!this.isPreyBall){
       if(this.loc.distance(this.preyHunting.loc) > this.range + this.radius + 20){
@@ -180,7 +182,7 @@ HeadClass.prototype.checkSuicide = function(){
   for(let i = suicideSquad.length-1; i >= 0; i--){
     var distance = this.loc.distance(suicideSquad[i].loc);
     if(distance <= 200){
-      suicideSquad[i].repulse(this.loc, .05);
+      this.repulse(suicideSquad[i].loc, .09);
     }
     if(distance <= this.radius + 5){
       this.isDead = true;

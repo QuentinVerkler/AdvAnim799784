@@ -105,7 +105,7 @@ BallHunterClass.prototype.checkSuicide = function(){
   for(let i = suicideSquad.length-1; i >= 0; i--){
     var distance = this.loc.distance(suicideSquad[i].loc);
     if(distance <= 200){
-      suicideSquad[i].repulse(this.loc, .05);
+      this.repulse(suicideSquad[i].loc, .09);
     }
     if(distance <= this.radius + 5){
       this.isDead = true;

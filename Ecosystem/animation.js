@@ -29,6 +29,7 @@ var particleSystems = [];
 //respawn times
 var flockRespawnTime = 0;
 var hunterRespawnTime = 0;
+var suicideRespawnTime = 0;
 
 // makes canvas and defines the vars
 function init(){
@@ -90,6 +91,7 @@ function animate(){
   //respawn timer add
   flockRespawnTime += 1;
   hunterRespawnTime += 1;
+  suicideRespawnTime += 1;
 
   //+++++respawn+++++
   //flock respawn
@@ -102,6 +104,17 @@ function animate(){
   if((ballHunters.length < 21) && (hunterRespawnTime >= 600 || ballHunters.length < 5)){
     addHunter(ballHunters);
     hunterRespawnTime = 0;
+  }
+
+  //suicide respawn
+  if(suicideSquad.length < 3 && suicideRespawnTime >= 400){
+    addSuicider(suicideSquad);
+    suicideRespawnTime = 0;
+  }
+
+  //snake respawn
+  if(bed.length < 3){
+    addSnake(bed);
   }
 
   //mater respawn
@@ -226,8 +239,12 @@ function addHunter(group){
 //+++++++snake functions+++++++
 function addBed(size, group){
   for(let i = 0; i < size; i++){
-    group[i] = new HeadClass(Math.random()*cnv.width, Math.random()*cnv.height, Math.random()*10-5, Math.random()*10-5, 0, 0, Math.random()*10+12, 15)
+    group[i] = new HeadClass(Math.random()*cnv.width, Math.random()*cnv.height, Math.random()*10-5, Math.random()*10-5, 0, 0, Math.random()*10+12, 15);
   }
+}
+
+function addSnake(group){
+  group.push(new HeadClass(Math.random()*cnv.width, Math.random()*cnv.height, Math.random()*10-5, Math.random()*10-5, 0, 0, Math.random()*10+12, 15));
 }
 //+++++++end snake functions+++++++
 

@@ -67,6 +67,8 @@ PreyBall.prototype.check = function(){
 }
 
 PreyBall.prototype.run = function(){
+  this.checkSuicide();
+  this.checkSnake();
   this.check();
   this.update();
   this.render();
@@ -75,10 +77,19 @@ PreyBall.prototype.run = function(){
   }else{
     this.decoys = null;
   }
-  this.checkSuicide();
 }
 
 //++++++++++++++++++++++++++++++++ PreyBall functions +++++++++++++++++++++++++++++
+PreyBall.prototype.checkSnake = function(){
+  for(let i = bed.length-1; i >= 0; i--){
+    if(this.loc.distance(bed[i].loc) <= 300){
+      this.isHunted = true;
+      this.hunter = bed[i];
+    }
+  }
+}
+
+//deploys a dart particle system
 PreyBall.prototype.defense = function(){
   if(this.decoys === null){
     this.decoys = new ParticleSystem(this.loc.x, this.loc.y, 15, 'hsl(265, 61%, 21%)', Math.random()*2 + 2, true);
@@ -110,7 +121,7 @@ PreyBall.prototype.checkSuicide = function(){
   for(let i = suicideSquad.length-1; i >= 0; i--){
     var distance = this.loc.distance(suicideSquad[i].loc);
     if(distance <= 200){
-      suicideSquad[i].repulse(this.loc, .1);
+      this.repulse(suicideSquad[i].loc, .1);
     }
     if(distance <= this.radius + 5){
       this.isDead = true;

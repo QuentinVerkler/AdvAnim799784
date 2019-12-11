@@ -92,6 +92,11 @@ SuicideClass.prototype.checkDead = function(){
     var collisionEvent = new Event("explode");
     window.dispatchEvent(collisionEvent);
 
+    //plays a sound
+    var deathSound = document.getElementById("suicideDeath");
+
+    deathSound.play();
+
     this.doSplice = true;
   }
 }
