@@ -85,6 +85,9 @@ PreyBall.prototype.checkSnake = function(){
     if(this.loc.distance(bed[i].loc) <= 300){
       this.isHunted = true;
       this.hunter = bed[i];
+    }else{
+      this.hunter = null;
+      this.isHunted = false;
     }
   }
 }
