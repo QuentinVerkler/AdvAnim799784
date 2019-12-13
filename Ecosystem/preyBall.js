@@ -72,23 +72,20 @@ PreyBall.prototype.run = function(){
   this.check();
   this.update();
   this.render();
-  if(this.isHunted){
-    this.defense();
-  }else{
-    this.decoys = null;
-  }
 }
 
 //++++++++++++++++++++++++++++++++ PreyBall functions +++++++++++++++++++++++++++++
 PreyBall.prototype.checkSnake = function(){
+  var activated = false;
   for(let i = bed.length-1; i >= 0; i--){
     if(this.loc.distance(bed[i].loc) <= 300){
-      this.isHunted = true;
-      this.hunter = bed[i];
-    }else{
-      this.hunter = null;
-      this.isHunted = false;
+      bed[i].repulse(this.loc, .05);
+      this.defense();
+      activated = true;
     }
+  }
+  if(!activated){
+    this.decoys = null;
   }
 }
 
@@ -98,7 +95,7 @@ PreyBall.prototype.defense = function(){
     this.decoys = new ParticleSystem(this.loc.x, this.loc.y, 15, 'hsl(265, 61%, 21%)', Math.random()*2 + 2, true);
     particleSystems.push(this.decoys);
   }else{
-    if(this.decoySpawn === 15){
+    if(this.decoySpawn === 30){
       this.decoys.particles.push(new ParticleClass(this.loc.x, this.loc.y, Math.random()*4-2, Math.random()*4-2, Math.random()*150+200, 'hsl(265, 61%, 21%)', Math.random()*2 + 2, true));
       this.decoySpawn = 0;
     }else{

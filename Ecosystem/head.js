@@ -20,7 +20,6 @@ function HeadClass(x, y, vx, vy, ax, ay, r, numTail){
   this.range = 300;
   this.preyHunting = null;
   this.isPreyBall = false;
-  this.stopMoving = false;
   this.eatRest = 0;
   this.running = false;
   this.isDead = false;
@@ -66,14 +65,10 @@ HeadClass.prototype.check = function(){
 
 HeadClass.prototype.update = function(){
   this.eatRest -= 1;
-  if(this.stopMoving){
-   this.acc.setMagnitude(0);
-  }else{
     this.vel.add(this.acc);
     this.vel.limit(this.maxSpeed);
     this.loc.add(this.vel);
     this.acc.setMagnitude(0);
-  }
 }
 
 HeadClass.prototype.run = function(balls){
@@ -87,6 +82,9 @@ HeadClass.prototype.run = function(balls){
   if(!this.running){
     this.hunt();
   }
+  if(this.tail.length <= 0){
+    this.isDead = true;
+  }
 }
 
 //++++++++++++++++++++++++++++++++ head specific functions ++++++++++++++++++++++++
@@ -99,25 +97,12 @@ HeadClass.prototype.hunt = function(){
       }
     }
   }
-
-  // if(this.preyHunting === null && this.eatRest <= 0){
-  //   for(let i = 0; i < preyBalls.length; i++){
-  //     if(this.loc.distance(preyBalls[i].loc) < this.range){
-  //       this.preyHunting = preyBalls[i];
-  //       this.preyHunting.isHunted = true;
-  //       this.isPreyBall = true;
-  //       break;
-  //     }
-  //   }
-  // }
-
   if(this.preyHunting != null){
-    if(!this.isPreyBall){
       if(this.loc.distance(this.preyHunting.loc) > this.range + this.radius + 20){
         this.preyHunting = null;
       }else{
-        this.stopMoving = true;
         this.attractTo();
+        this.preyHunting.repulse(this.loc, .04);
         if(this.loc.distance(this.preyHunting.loc) < this.radius + this.preyHunting.radius){
           collisionLocX = this.loc.x;
           collisionLocY = this.loc.y;
@@ -128,26 +113,19 @@ HeadClass.prototype.hunt = function(){
           //resets snake's hunting vars
           this.preyHunting.isDead = true;
           this.preyHunting = null;
-          this.stopMoving = false;
           this.eatRest = 600;
+
+          //makes death sound
+          var ballDeath = document.getElementById("ballDeath");
+          ballDeath.play();
 
           //adds to tail
           var front = this.tail.length-1;
           this.tail.push(new TailClass(this, this.tail[front], this.tail[front].length, this.tail[front].length, 1, 3*(this.radius/4)));
         }
       }
-    }else if(this.loc.distance(this.preyHunting.loc) < 400){
-      if(this.loc.distance(this.preyHunting.loc) > this.range + this.radius + 20){
-        this.isPreyBall = false;
-        this.preyHunting.isHunted = false;
-        this.preyHunting = null;
-      }else{
-        this.preyHunting.repulse(this.loc, .09);
-        this.repulse(this.preyHunting.loc, .09);
-      }
     }
   }
-}
 
 
 //makes head attracted to ball (temp function may scrap)
@@ -155,7 +133,7 @@ HeadClass.prototype.attractTo = function (){
   var speed;
   speed = JSVector.subGetNew(this.preyHunting.loc, this.loc);
   speed.normalize();
-  speed.multiply(4);
+  speed.multiply(6);
   this.loc.add(speed);
 }
 

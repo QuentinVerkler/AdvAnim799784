@@ -82,7 +82,7 @@ Orbiter.prototype.update = function(){
           this.return();
           this.ballHunting.loc = this.loc.copy();
         }else{
-          this.ballHunting.isHunted = false;
+          this.ballHunting.isHunted = true;
           this.loc = this.body.loc.copy();
           this.ballHunting.loc = this.loc.copy();
           this.ballHunting.lifeSpan -= 2;
@@ -94,12 +94,8 @@ Orbiter.prototype.update = function(){
         this.isHunting = false;
         this.ballHunting = null;
 
-        //pooping
-        collisionLocX = this.loc.x;
-        collisionLocY = this.loc.y;
-
-        var collisionEvent = new Event("collide");
-        window.dispatchEvent(collisionEvent);
+        var birdDeath = document.getElementById("birdDeath");
+        birdDeath.play();
       }
       this.angle += this.angleV
   }
@@ -120,7 +116,7 @@ Orbiter.prototype.return = function(thisPrey){
   var speed;
   speed = JSVector.subGetNew(this.body.loc, this.loc);
   speed.normalize();
-  speed.multiply(6);
+  speed.multiply(8);
   this.loc.add(speed);
 }
 
@@ -130,6 +126,6 @@ Orbiter.prototype.hunt = function(){
   var speed;
   speed = JSVector.subGetNew(this.ballHunting.loc, this.loc);
   speed.normalize();
-  speed.multiply(15);
+  speed.multiply(8);
   this.loc.add(speed);
 }

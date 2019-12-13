@@ -61,6 +61,10 @@ Mater.prototype.update = function(){
   if(this.mater === null){
     this.steerForces();
   }
+  if(this.hunter != null && this.hunter.isDead){
+    this.hunter = false;
+    this.isHunted = false;
+  }
   this.mateRest -= 1;
   this.vel.add(this.acc);
   this.vel.limit(this.maxSpeed);

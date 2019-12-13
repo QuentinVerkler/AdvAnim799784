@@ -36,8 +36,8 @@ function init(){
   //gets canvas
   cnv = document.getElementById('cnv');
   //sets dimensions
-  cnv.width = 900;
-  cnv.height = 2000;
+  cnv.width = 2500;
+  cnv.height = 2500;
   cnv.style.border = 'solid black 2x';
   cnv.style.backgroundColor = 'rgba(82, 147, 49, .5)';
 
@@ -62,17 +62,17 @@ function init(){
 	ctx = cnv.getContext('2d');
 
   //creature loaders
-  addFlock(20, flock);
+  addFlock(40, flock);
 
-  addHuntingGroup(3, ballHunters);
+  addHuntingGroup(12, ballHunters);
 
-  addBed(2, bed);
+  addBed(5, bed);
 
-  addPreyGroup(4, preyBalls);
+  addPreyGroup(9, preyBalls);
 
-  addMaterGroup(10, maters);
+  addMaterGroup(40, maters);
 
-  addSuicideGroup(3, suicideSquad);
+  addSuicideGroup(9, suicideSquad);
 
   animate();
 }
@@ -102,12 +102,13 @@ function animate(){
 
   //hunter respawn
   if((ballHunters.length < 21) && (hunterRespawnTime >= 600 || ballHunters.length < 5)){
+    ballRespawnSound();
     addHunter(ballHunters);
     hunterRespawnTime = 0;
   }
 
   //suicide respawn
-  if(suicideSquad.length < 3 && suicideRespawnTime >= 400){
+  if(suicideSquad.length < 9 && suicideRespawnTime >= 400){
     addSuicider(suicideSquad);
     suicideRespawnTime = 0;
   }
@@ -117,8 +118,14 @@ function animate(){
     addSnake(bed);
   }
 
+  //preyBall respawn
+  if(preyBalls.length <= 10){
+    addPreyBall(preyBalls);
+
+  }
+
   //mater respawn
-  if(maters.length < 10){
+  if(maters.length < 15){
     addMater(maters);
   }
 
@@ -207,7 +214,14 @@ function animate(){
 
 }
 
+//++++++++misc sound functions+++++++++
+function ballRespawnSound(){
+  var startSound = document.getElementById("startSound");
 
+  startSound.play();
+}
+
+//++++++++end misc sound functions+++++++++
 
 //+++++++flock functions+++++++
 //creates flocks
