@@ -36,8 +36,8 @@ function init(){
   //gets canvas
   cnv = document.getElementById('cnv');
   //sets dimensions
-  cnv.width = 2500;
-  cnv.height = 2500;
+  cnv.width = 2700;
+  cnv.height = 2700;
   cnv.style.border = 'solid black 2x';
   cnv.style.backgroundColor = 'rgba(82, 147, 49, .5)';
 
@@ -101,7 +101,7 @@ function animate(){
   }
 
   //hunter respawn
-  if((ballHunters.length < 21) && (hunterRespawnTime >= 600 || ballHunters.length < 5)){
+  if((ballHunters.length < 21) && (hunterRespawnTime >= 600 || ballHunters.length < 8)){
     ballRespawnSound();
     addHunter(ballHunters);
     hunterRespawnTime = 0;
