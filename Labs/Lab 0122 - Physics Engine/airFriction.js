@@ -59,14 +59,14 @@ var purpleColor = '#751575';
 
 // create two boxes and a ground
 var boxA = Bodies.rectangle(400, 200, 80, 80,
-  {density: .1, frictionAir: .07, friction: .01,});
+  {density: .4, restitution: .6, frictionAir: .05, friction: .05,});
 var boxB = Bodies.rectangle(450, 50, 80, 80,
-  {density: .2, frictionAir: .03, friction: .7});
-var circA = Bodies.circle(280, 150, 60,
-  {density: .3, restitution: .9, frictionAir: .03, friction: .9});
+  {density: .2, frictionAir: .03});
+var circA = Bodies.circle(280, 150, 50,
+  {density: .6, restitution: .9, frictionAir: .03, friction: 1}, 800);
 var ground1 = Bodies.rectangle(300, 410, 810, 60,
   { isStatic: true, angle: Math.PI * .09 });
-var ground2 = Bodies.rectangle(700, 750, 400, 60,
+var ground2 = Bodies.rectangle(750, 750, 500, 60,
   { isStatic: true, angle: -Math.PI * .05 });
 var ground3 = Bodies.rectangle(380, 800, 200, 40,
   { isStatic: true, angle: Math.PI * .5 });
@@ -80,6 +80,15 @@ var circB = Bodies.circle(380, 640, 60,
 
 // add all of the bodies to the world
 World.add(world, [boxA, boxB, circA, circB, ground1, ground2, ground3]);
+
+//add additional Bodies
+World.add(world, Matter.Bodies.trapezoid(800, 300, 80, 50, Math.PI/5,
+  {density: .8, restitution: .8, frictionAir: .1, friction: .35}
+));
+
+World.add(world, Matter.Bodies.polygon(700, 350, 5, 70,
+  {density: .3, frictionAir: .08, friction: .4}
+));
 
 //adds rope
 World.add(world, Constraint.create({
