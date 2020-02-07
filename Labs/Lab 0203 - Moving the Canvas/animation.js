@@ -2,82 +2,89 @@ window.onload = init;
 var cnv;
 var ctx;
 var balls = [];
+var miniCnv;
+var miniCtx;
 // var keyboard = new KeyboardEvent();
 
-//eventListeners
-window.addEventListener("up", up);
-window.addEventListener("left", left);
-window.addEventListener("right", right);
-window.addEventListener("down", down);
-
 //keyboard events
-window.addEventListener("keydown", function(event)){
-  if(event.keyCode === 37){
-    var keyEvent = new Event("left");
-    window.dispatchEvent(keyEvent);
-  }else if(event.keyCode === 38){
-    var keyEvent = new Event("up");
-    window.dispatchEvent(keyEvent);
-  }else if(event.keyCode === 39){
-    var keyEvent = new Event("right");
-    window.dispatchEvent(keyEvent);
-  }else if(event.keyCode === 40){
-    var keyEvent = new Event("down");
-    window.dispatchEvent(keyEvent);
-  }
-}
+window.addEventListener("keydown", move);
 
 function init(){
 	//get canvas
 	cnv = document.getElementById('cnv');
+  //get context
+  ctx = cnv.getContext('2d');
+
 	//set dimensions
-	cnv.width = window.innerWidth;
-	cnv.height = window.innerHeight;
+	cnv.width = 800;
+	cnv.height = 800;
 	cnv.style.border = 'solid black 2x';
 	cnv.style.backgroundColor = 'rgba(0,44,55, .5)';
+  ctx.translate(400, 400);
 
-  //get context
-	ctx = cnv.getContext('2d');
-  //move canvas so origin is in middle
-  ctx.translate(cnv.width/2, cnv.height/2);
+  //mini map
+  miniCnv = document.getElementById('miniCnv');
+  miniCtx = miniCnv.getContext('2d');
+  miniCnv.width = 200;
+  miniCnv.height = 200;
+  miniCnv.style.border = "solid black 1"
+  miniCnv.style.backgroundColor = 'rgba(0,44,55, .5)';
+  miniCtx.translate(100, 100);
 
-	ball[0] = new BallClass(-100, -100, 0, 0, 0, 0, 30);
-  ball[1] = new BallClass(100, -100, 0, 0, 0, 0, 30);
-  ball[2] = new BallClass(-100, 100, 0, 0, 0, 0, 30);
-  ball[3] = new BallClass(100, 100, 0, 0, 0, 0, 30);
+
+	balls[0] = new BallClass(-100, -100, 0, 0, 0, 0, 28);
+  balls[1] = new BallClass(100, -100, 0, 0, 0, 0, 28);
+  balls[2] = new BallClass(-100, 100, 0, 0, 0, 0, 28);
+  balls[3] = new BallClass(100, 100, 0, 0, 0, 0, 28);
 
 	animate();
 }
 
-
+var distXMoved = 0;
+var distYMoved = 0;
 
 function animate(){
 	requestAnimationFrame(animate);
-	ctx.clearRect(0,0,window.innerWidth, window.innerHeight);
+	ctx.clearRect(-4000, -4000, 8000, 8000);
+  miniCtx.clearRect(-500, -500, 1000, 1000);
+
+  miniCtx.save();
+
+  miniCtx.translate(distXMoved,distYMoved);
+  miniCtx.strokStyle = 'rgba(0, 0, 0, 1)'
+  miniCtx.lineWidth = '2';
+  miniCtx.beginPath();
+  miniCtx.rect(-50, -50, 100, 100);
+  miniCtx.stroke();
+
+  miniCtx.restore();
 
 	for(let a = 0; a < balls.length; a++){
-		ball[a].run();
-	}
+		balls[a].run();
 
-  // if(keyboard.key = 38){
-  //   var collisionEvent = new Event("up");
-  //   window.dispatchEvent(collisionEvent);
-  // }
+	}
 }
 
 //eventListener functions
-function up(collisionEvent){
-  ctx.translate(0, -1);
-}
-
-function left(collisionEvent){
-  ctx.translate(-1, 0);
-}
-
-function right(collisionEvent){
-  ctx.translate(1, 0);
-}
-
-function down(collisionEvent){
-  ctx.translate(0, 1);
+function move(event){
+  if(event.key === "ArrowUp"){
+    ctx.translate(0, 50);
+    miniCtx.translate(0, 50/8);
+    distYMoved -= 50/8;
+  }
+  if(event.key === "ArrowDown"){
+    ctx.translate(0, -50);
+    miniCtx.translate(0, -50/8);
+    distYMoved += 50/8;
+  }
+  if(event.key === "ArrowLeft"){
+    ctx.translate(50, 0);
+    miniCtx.translate(50/8, 0);
+    distXMoved -= 50/8;
+  }
+  if(event.key === "ArrowRight"){
+    ctx.translate(-50, 0);
+    miniCtx.translate(-50/8, 0);
+    distXMoved += 50/8;
+  }
 }

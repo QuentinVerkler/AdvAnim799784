@@ -11,13 +11,23 @@ function BallClass(x, y, vx, vy, ax, ay, radius){
 
 BallClass.prototype.render = function(){
   ctx.strokStyle = 'rgb(255,105,180)';
-  ctx.lineWidth = '10';
+  ctx.lineWidth = '1';
   ctx.fillStyle = 'rgb(255,105,180)';
 
-  ctx.beginPath()
+  ctx.beginPath();
   ctx.arc(this.loc.x, this.loc.y, this.radius, 2*Math.PI, 0, false);
   ctx.stroke();
   ctx.fill();
+
+  //minimap view
+  miniCtx.strokStyle = 'rgb(255,105,180)';
+  miniCtx.lineWidth = '1';
+  miniCtx.fillStyle = 'rgb(255,105,180)';
+
+  miniCtx.beginPath();
+  miniCtx.arc(this.loc.x/8 , this.loc.y/8, this.radius/8, Math.PI * 2, 0, false);
+  miniCtx.stroke();
+  miniCtx.fill();
 }
 
 BallClass.prototype.update = function(){
