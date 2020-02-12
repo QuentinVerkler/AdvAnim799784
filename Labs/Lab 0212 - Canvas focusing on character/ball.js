@@ -1,10 +1,8 @@
 //BallClass: A class to make balls
 
 //class constructor
-function BallClass(x, y, vx, vy, ax, ay, radius){
+function BallClass(x, y, radius){
   this.loc = new JSVector(x, y);
-  this.vel = new JSVector(vx, vy);
-  this.acc = new JSVector(ax, ay);
   this.radius = radius;
 
 }
@@ -32,10 +30,10 @@ BallClass.prototype.render = function(){
 
   miniCtx.save();
 
-  miniCtx.translate(this.loc.x/40, this.loc.y/40);
+  miniCtx.translate(this.loc.x/scale, this.loc.y/scale);
 
   miniCtx.beginPath();
-  miniCtx.arc(0 , 0, this.radius/40, Math.PI * 2, 0, false);
+  miniCtx.arc(0 , 0, this.radius/scale, Math.PI * 2, 0, false);
   miniCtx.stroke();
   miniCtx.fill();
 
@@ -43,8 +41,7 @@ BallClass.prototype.render = function(){
 }
 
 BallClass.prototype.update = function(){
-  this.vel.add(this.acc);
-  this.loc.add(this.vel);
+
 }
 
 BallClass.prototype.run = function(){

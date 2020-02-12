@@ -1,9 +1,10 @@
 window.onload = init;
 var cnv;
 var ctx;
-var balls = [];
+var ball;
 var miniCnv;
 var miniCtx;
+var scale = 20;
 
 //keyboard event
 window.addEventListener("keydown", move);
@@ -31,11 +32,7 @@ function init(){
   miniCtx.translate(100, 100);
 
 
-	balls[0] = new BallClass(-100, -100, Math.random() * 10 - 5, Math.random() * 10 - 5, 0, 0, 28);
-  balls[1] = new BallClass(100, -100, Math.random() * 10 - 5, Math.random() * 10 - 5, 0, 0, 28);
-  balls[2] = new BallClass(-100, 100, Math.random() * 10 - 5, Math.random() * 10 - 5, 0, 0, 28);
-  balls[3] = new BallClass(100, 100, Math.random() * 10 - 5, Math.random() * 10 - 5, 0, 0, 28);
-	balls[4] = new BallClass(500, 300, Math.random() * 10 - 5, Math.random() * 10 - 5, 0, 0, 29);
+	ball = new BallClass(0, 0, 28);
 
 	animate();
 }
@@ -45,8 +42,8 @@ var distYMoved = 0;
 
 function animate(){
 	requestAnimationFrame(animate);
-	ctx.clearRect(-4000, -4000, 8000, 8000);
-  miniCtx.clearRect(-100, -100, 200, 200);
+	ctx.clearRect(-2000, -2000, 4000, 4000);
+  miniCtx.clearRect(-2000/scale, -2000/scale, 4000/scale, 4000/scale);
 
   // miniCtx.save();
 	//
@@ -54,37 +51,31 @@ function animate(){
   miniCtx.strokStyle = 'rgba(0, 0, 0, 1)'
   miniCtx.lineWidth = '.5';
   miniCtx.beginPath();
-  miniCtx.rect(-5 + distXMoved, -5 + distYMoved, 10, 10);
+  miniCtx.rect(-10 + distXMoved, -10 + distYMoved, 20, 20);
   miniCtx.stroke();
 
   // miniCtx.restore();
 
-	for(let a = 0; a < balls.length; a++){
-		balls[a].run();
+		ball.run();
 
-	}
 }
 
 //eventListener functions
 function move(event){
   if(event.key === "ArrowUp"){
-    ctx.translate(0, 50);
-    // miniCtx.translate(0, 50/40);
-    distYMoved -= 50/40;
+    ball.loc.y += 10;
+    distYMoved -= 10/scale;
   }
   if(event.key === "ArrowDown"){
-    ctx.translate(0, -50);
-    // miniCtx.translate(0, -50/40);
-    distYMoved += 50/40;
+    ball.loc.y -= 10;
+    distYMoved += 10/scale;
   }
   if(event.key === "ArrowLeft"){
-    ctx.translate(50, 0);
-    // miniCtx.translate(50/40, 0);
-    distXMoved -= 50/40;
+    ball.loc.x += 10;
+    distXMoved -= 10/scale;
   }
   if(event.key === "ArrowRight"){
-    ctx.translate(-50, 0);
-    // miniCtx.translate(-50/40, 0);
-    distXMoved += 50/40;
+    ball.loc.y -= 10;
+    distXMoved += 10/scale;
   }
 }
