@@ -1,8 +1,10 @@
 //BallClass: A class to make balls
 
 //class constructor
-function BallClass(x, y, radius){
+function BallClass(x, y, vx, vy, ax, ay, radius){
   this.loc = new JSVector(x, y);
+  this.vel = new JSVector(vx, vy);
+  this.acc = new JSVector(ax, ay);
   this.radius = radius;
 
 }
