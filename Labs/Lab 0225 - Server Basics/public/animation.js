@@ -35,12 +35,6 @@ function init(){
 
 	ball = new BallClass(0, 0, 0, 0, 0, 0, 28);
 
-	balls[0] = new BallClass(-100, -100, Math.random() * 10 - 5, Math.random() * 10 - 5, 0, 0, 28);
-  balls[1] = new BallClass(100, -100, Math.random() * 10 - 5, Math.random() * 10 - 5, 0, 0, 28);
-  balls[2] = new BallClass(-100, 100, Math.random() * 10 - 5, Math.random() * 10 - 5, 0, 0, 28);
-  balls[3] = new BallClass(100, 100, Math.random() * 10 - 5, Math.random() * 10 - 5, 0, 0, 28);
-	balls[4] = new BallClass(500, 300, Math.random() * 10 - 5, Math.random() * 10 - 5, 0, 0, 29);
-
 	animate();
 }
 
