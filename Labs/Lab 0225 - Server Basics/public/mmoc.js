@@ -33,11 +33,23 @@ let MMOC = (function() {
                         type: 3
                     }));
                 }, 15);
+
+                multiplayer.sendGreeting();
             };
 
             this.ws.onmessage = function (event) {
-                _data = JSON.parse(event.data);
-                this.data = _data;
+                let decoded = JSON.parse(event.data);
+
+                switch(decoded.type){
+                  case "data":
+                      _data = JSON.parse(event.data);
+                      this.data = _data;
+                      break;
+
+                  case "greeting":
+                      console.log("Server says " + decoded.phrase);
+                      break;
+                }
             };
 
 
@@ -75,6 +87,14 @@ let MMOC = (function() {
                 type: 4,
                 id: object.id
             }));
+        }
+
+        sendGreeting() {
+          this.ws.send(JSON.stringify({
+            type: "greeting",
+            message: "Hello Server",
+            id: _id
+          }));
         }
 
         getPlayers() {

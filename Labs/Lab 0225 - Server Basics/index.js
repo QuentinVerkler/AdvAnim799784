@@ -42,7 +42,14 @@ app.ws('/ws', function(ws, req) {
 
             // Send back all data
             case 3:
-                ws.send(JSON.stringify(DATA));
+                let obj = {type: "data", data: DATA};
+                ws.send(JSON.stringify(obj));
+                break;
+
+            case "greeting":
+                console.log("Client " + decoded.id + " says " + decoded.message);
+                let b = {type: "greeting", phrase: "Hello client"};
+                ws.send(JSON.stringify(b));
                 break;
         }
     });
