@@ -44,10 +44,9 @@ function draw() {
         }
     }
 
-    let players = multiplayer.getPlayers();
+    let players = multiplayer.getPlayers()["data"];
     for (let player in players) {
-        //let color = players[player]["other"]["color"];
-        let color = "#C4B6F9";
+        let color = players[player]["other"]["color"];
         fill(color);
         let x = players[player]["x"];
         let y = players[player]["y"];
