@@ -36,11 +36,11 @@ function init(){
 
 	ball = new BallClass(0, 0, 0, 0, 0, 0, 28);
 
-	balls[0] = new BallClass(-100, -100, Math.random() * 10 - 5, Math.random() * 10 - 5, 0, 0, 28);
-  balls[1] = new BallClass(100, -100, Math.random() * 10 - 5, Math.random() * 10 - 5, 0, 0, 28);
-  balls[2] = new BallClass(-100, 100, Math.random() * 10 - 5, Math.random() * 10 - 5, 0, 0, 28);
-  balls[3] = new BallClass(100, 100, Math.random() * 10 - 5, Math.random() * 10 - 5, 0, 0, 28);
-	balls[4] = new BallClass(500, 300, Math.random() * 10 - 5, Math.random() * 10 - 5, 0, 0, 29);
+	balls[0] = new BallClass(-100, -100, 0, 0, 0, 0, 28);
+  balls[1] = new BallClass(100, -100, 0, 0, 0, 0, 28);
+  balls[2] = new BallClass(-100, 100, 0, 0, 0, 0, 28);
+  balls[3] = new BallClass(100, 100, 0, 0, 0, 0, 28);
+	balls[4] = new BallClass(500, 300, 0, 0, 0, 0, 29);
 
 	animate();
 }
@@ -53,10 +53,10 @@ function animate(){
 	ctx.clearRect(-2000, -2000, 4000, 4000);
   miniCtx.clearRect(-2000/scale, -2000/scale, 4000/scale, 4000/scale);
 
-	slide();
+	// slide();
 
 	//ctx.translate(distXMoved, distYMoved);
-
+	ctx.translate(ball.loc.x, ball.loc.y);
 
   miniCtx.strokStyle = 'rgba(0, 0, 0, 1)'
   miniCtx.lineWidth = '.5';
@@ -93,15 +93,19 @@ function slide(){
 function move(event){
 	let dist = 5;
   if(event.key === "ArrowUp"){
-		valueY += dist;
+		// valueY += dist;
+		ball.acc.add(new JSVector(0, -.025));
   }
   if(event.key === "ArrowDown"){
-		valueY -= dist;
+		// valueY -= dist;
+		ball.acc.add(new JSVector(0, .025));
   }
   if(event.key === "ArrowLeft"){
-		valueX += dist;
+		// valueX += dist;
+		ball.acc.add(new JSVector(-.025, 0));
   }
   if(event.key === "ArrowRight"){
-		valueX -= dist;
+		// valueX -= dist;
+		ball.acc.add(new JSVector(.025, 0));
   }
 }

@@ -43,7 +43,10 @@ BallClass.prototype.render = function(){
 }
 
 BallClass.prototype.update = function(){
-
+  this.acc.limit(.1);
+  this.vel.add(this.acc);
+  this.vel.limit(6);
+  this.loc.add(this.vel);
 }
 
 BallClass.prototype.run = function(){

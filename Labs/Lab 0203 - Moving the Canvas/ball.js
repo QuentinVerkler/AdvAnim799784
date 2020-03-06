@@ -43,8 +43,8 @@ BallClass.prototype.render = function(){
 }
 
 BallClass.prototype.update = function(){
-  this.vel.add(this.acc);
-  this.loc.add(this.vel);
+  // this.vel.add(this.acc);
+  // this.loc.add(this.vel);
 }
 
 BallClass.prototype.run = function(){
