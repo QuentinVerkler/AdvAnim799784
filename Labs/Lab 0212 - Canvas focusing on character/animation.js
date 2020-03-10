@@ -56,13 +56,16 @@ function animate(){
 	// slide();
 
 	//ctx.translate(distXMoved, distYMoved);
-	ctx.translate(ball.loc.x, ball.loc.y);
 
-  miniCtx.strokStyle = 'rgba(0, 0, 0, 1)'
-  miniCtx.lineWidth = '.5';
-  miniCtx.beginPath();
-  miniCtx.rect(-20 + distXMoved/scale, -20 + distYMoved/scale, 40, 40);
-  miniCtx.stroke();
+	// ctx.translate(ball.loc.x, ball.loc.y);
+
+	trans();
+
+  // miniCtx.strokStyle = 'rgba(0, 0, 0, 1)'
+  // miniCtx.lineWidth = '.5';
+  // miniCtx.beginPath();
+  // miniCtx.rect(-20 + distXMoved/scale, -20 + distYMoved/scale, 40, 40);
+  // miniCtx.stroke();
 
 	ball.run();
 
@@ -73,11 +76,24 @@ function animate(){
 
 }
 
+// translate the screen over the player
+function trans(){
+	let distVector = JSVector.subGetNew(ball.loc, ball.home);
+	ctx.translate(-distVector.x, -distVector.y);
+
+	miniCtx.strokStyle = 'rgba(0, 0, 0, 1)'
+	miniCtx.lineWidth = '.5';
+	miniCtx.beginPath();
+	miniCtx.rect(-20 + distVector.x/scale, -20 + distVector.y/scale, 40, 40);
+	miniCtx.stroke();
+
+}
+
 //slide variables
 var valueX = 0;
 var valueY = 0;
 
-//glide move function
+//glide move function, is old
 function slide(){
 	valueX = valueX/1.05;
 	valueY = valueY/1.05;
@@ -94,18 +110,18 @@ function move(event){
 	let dist = 5;
   if(event.key === "ArrowUp"){
 		// valueY += dist;
-		ball.acc.add(new JSVector(0, -.025));
+		ball.vel.add(new JSVector(0, -.25));
   }
   if(event.key === "ArrowDown"){
 		// valueY -= dist;
-		ball.acc.add(new JSVector(0, .025));
+		ball.vel.add(new JSVector(0, .25));
   }
   if(event.key === "ArrowLeft"){
 		// valueX += dist;
-		ball.acc.add(new JSVector(-.025, 0));
+		ball.vel.add(new JSVector(-.25, 0));
   }
   if(event.key === "ArrowRight"){
 		// valueX -= dist;
-		ball.acc.add(new JSVector(.025, 0));
+		ball.vel.add(new JSVector(.25, 0));
   }
 }

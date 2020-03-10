@@ -3,6 +3,7 @@
 //class constructor
 function BallClass(x, y, vx, vy, ax, ay, radius){
   this.loc = new JSVector(x, y);
+  this.home = new JSVector(x, y);
   this.vel = new JSVector(vx, vy);
   this.acc = new JSVector(ax, ay);
   this.radius = radius;
@@ -43,9 +44,9 @@ BallClass.prototype.render = function(){
 }
 
 BallClass.prototype.update = function(){
-  this.acc.limit(.1);
+  this.acc.limit(.05);
   this.vel.add(this.acc);
-  this.vel.limit(6);
+  this.vel.limit(3);
   this.loc.add(this.vel);
 }
 
