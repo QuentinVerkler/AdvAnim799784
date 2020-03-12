@@ -44,10 +44,22 @@ BallClass.prototype.render = function(){
 }
 
 BallClass.prototype.update = function(){
-  this.acc.limit(.05);
+  this.acc.limit(.2);
   this.vel.add(this.acc);
-  this.vel.limit(3);
+  this.vel.limit(6);
+  if(this.vel.getMagnitude() != 0){
+    this.stop();
+  }
   this.loc.add(this.vel);
+  // this.vel.setMagnitude(0);
+  // this.vel.setDirection(0);
+}
+
+BallClass.prototype.stop = function(){
+    let stop = new JSVector(0,0);
+    stop.setMagnitude(.1);
+    stop.setDirection(this.vel.getDirection() + Math.PI);
+    this.acc.add(stop);
 }
 
 BallClass.prototype.run = function(){
@@ -57,11 +69,13 @@ BallClass.prototype.run = function(){
 }
 
 BallClass.prototype.check = function(){
-  if(this.loc.x < -4000 + this.radius || this.loc.x + this.radius > 4000){
+  if(this.loc.x < -2000 + this.radius || this.loc.x + this.radius > 2000){
     this.vel.x = -this.vel.x;
+    this.acc.x = 0;
   }
-  if(this.loc.y < -4000 + this.radius || this.loc.y + this.radius > 4000){
+  if(this.loc.y < -2000 + this.radius || this.loc.y + this.radius > 2000){
     this.vel.y = -this.vel.y;
+    this.acc.y = 0;
   }
 
 }

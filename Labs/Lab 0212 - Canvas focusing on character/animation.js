@@ -53,21 +53,20 @@ function animate(){
 	ctx.clearRect(-2000, -2000, 4000, 4000);
   miniCtx.clearRect(-2000/scale, -2000/scale, 4000/scale, 4000/scale);
 
+	ctx.strokeStyle = 'rgba(0, 0, 0, 1)';
+	ctx.lineWidth = '3';
+	ctx.beginPath();
+	ctx.rect(-2000, -2000, 4000, 4000);
+
 	// slide();
 
 	//ctx.translate(distXMoved, distYMoved);
 
-	// ctx.translate(ball.loc.x, ball.loc.y);
-
 	trans();
 
-  // miniCtx.strokStyle = 'rgba(0, 0, 0, 1)'
-  // miniCtx.lineWidth = '.5';
-  // miniCtx.beginPath();
-  // miniCtx.rect(-20 + distXMoved/scale, -20 + distYMoved/scale, 40, 40);
-  // miniCtx.stroke();
-
 	ball.run();
+
+	ctx.translate(-ball.vel.x, -ball.vel.y);
 
 	for(let a = 0; a < balls.length; a++){
 		balls[a].run();
@@ -79,7 +78,6 @@ function animate(){
 // translate the screen over the player
 function trans(){
 	let distVector = JSVector.subGetNew(ball.loc, ball.home);
-	ctx.translate(-distVector.x, -distVector.y);
 
 	miniCtx.strokStyle = 'rgba(0, 0, 0, 1)'
 	miniCtx.lineWidth = '.5';
@@ -108,20 +106,34 @@ function slide(){
 //eventListener functions
 function move(event){
 	let dist = 5;
+	let vel = 1;
+	let speed = new JSVector(0,0);
   if(event.key === "ArrowUp"){
 		// valueY += dist;
-		ball.vel.add(new JSVector(0, -.25));
+		// ball.vel.add(new JSVector(0, -speed));
+		speed.setMagnitude(vel);
+		speed.setDirection(-Math.PI/2);
+		ball.acc.add(speed);
   }
   if(event.key === "ArrowDown"){
 		// valueY -= dist;
-		ball.vel.add(new JSVector(0, .25));
+		// ball.vel.add(new JSVector(0, speed));
+		speed.setMagnitude(vel);
+		speed.setDirection(Math.PI/2);
+		ball.acc.add(speed);
   }
   if(event.key === "ArrowLeft"){
 		// valueX += dist;
-		ball.vel.add(new JSVector(-.25, 0));
+		// ball.vel.add(new JSVector(-speed, 0));
+		speed.setMagnitude(vel);
+		speed.setDirection(Math.PI);
+		ball.acc.add(speed);
   }
   if(event.key === "ArrowRight"){
 		// valueX -= dist;
-		ball.vel.add(new JSVector(.25, 0));
+		// ball.vel.add(new JSVector(speed, 0));
+		speed.setMagnitude(vel);
+		speed.setDirection(0);
+		ball.acc.add(speed);
   }
 }
