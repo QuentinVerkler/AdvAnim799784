@@ -58,8 +58,6 @@ function animate(){
 	ctx.beginPath();
 	ctx.rect(-2000, -2000, 4000, 4000);
 
-	// slide();
-
 	//ctx.translate(distXMoved, distYMoved);
 
 	trans();
@@ -90,18 +88,6 @@ function trans(){
 //slide variables
 var valueX = 0;
 var valueY = 0;
-
-//glide move function, is old
-function slide(){
-	valueX = valueX/1.05;
-	valueY = valueY/1.05;
-	ctx.translate(valueX, valueY);
-	ball.loc.x -= valueX;
-	ball.loc.y -= valueY;
-	distXMoved -= valueX;
-	distYMoved -= valueY;
-}
-
 
 //eventListener functions
 function move(event){

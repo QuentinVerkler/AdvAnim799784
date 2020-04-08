@@ -57,7 +57,8 @@ BallClass.prototype.update = function(){
 
 BallClass.prototype.stop = function(){
     let stop = new JSVector(0,0);
-    stop.setMagnitude(.1);
+    //higher mag = less wobble
+    stop.setMagnitude(.2);
     stop.setDirection(this.vel.getDirection() + Math.PI);
     this.acc.add(stop);
 }
