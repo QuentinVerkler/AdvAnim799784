@@ -7,6 +7,7 @@ function BallClass(x, y, vx, vy, ax, ay, radius){
   this.vel = new JSVector(vx, vy);
   this.acc = new JSVector(ax, ay);
   this.radius = radius;
+  this.halt = false;
 
 }
 
@@ -47,20 +48,24 @@ BallClass.prototype.update = function(){
   this.acc.limit(.2);
   this.vel.add(this.acc);
   this.vel.limit(6);
-  if(this.vel.getMagnitude() != 0){
+  if(this.halt){
     this.stop();
   }
   this.loc.add(this.vel);
-  // this.vel.setMagnitude(0);
-  // this.vel.setDirection(0);
 }
 
 BallClass.prototype.stop = function(){
+  if(this.vel.getMagnitude() >= .01 || this.vel.getMagnitude() <= -.01){
     let stop = new JSVector(0,0);
     //higher mag = less wobble
     stop.setMagnitude(.2);
     stop.setDirection(this.vel.getDirection() + Math.PI);
     this.acc.add(stop);
+  }else{
+    this.acc.setMagnitude(0);
+    this.vel.setMagnitude(0);
+    this.halt = false;
+  }
 }
 
 BallClass.prototype.run = function(){

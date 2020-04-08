@@ -9,7 +9,42 @@ var scale = 20;
 
 
 //keyboard event
+// window.addEventListener("keydown", move);
+var keydown = false;
+
 window.addEventListener("keydown", move);
+
+function move(event){
+	if(!keydown){
+		ball.halt = false;
+		keydown = true;
+		if(event.key === "ArrowUp"){
+			ball.acc.add(new JSVector(0,-1));
+			ball.acc.setDirection(-Math.PI/2);
+		}
+
+		if(event.key === "ArrowDown"){
+			ball.acc.add(new JSVector(0,1));
+			ball.acc.setDirection(Math.PI/2);
+		}
+
+		if(event.key === "ArrowLeft"){
+			ball.acc.add(new JSVector(-1,0));
+			ball.acc.setDirection(Math.PI);
+		}
+
+		if(event.key === "ArrowRight"){
+			ball.acc.add(new JSVector(1,0));
+			ball.acc.setDirection(0);
+		}
+
+	}
+}
+
+window.addEventListener("keyup", function(){
+	keydown = false;
+	ball.halt = true;
+});
 
 function init(){
 	//get canvas
@@ -83,43 +118,4 @@ function trans(){
 	miniCtx.rect(-20 + distVector.x/scale, -20 + distVector.y/scale, 40, 40);
 	miniCtx.stroke();
 
-}
-
-//slide variables
-var valueX = 0;
-var valueY = 0;
-
-//eventListener functions
-function move(event){
-	let dist = 5;
-	let vel = 1;
-	let speed = new JSVector(0,0);
-  if(event.key === "ArrowUp"){
-		// valueY += dist;
-		// ball.vel.add(new JSVector(0, -speed));
-		speed.setMagnitude(vel);
-		speed.setDirection(-Math.PI/2);
-		ball.acc.add(speed);
-  }
-  if(event.key === "ArrowDown"){
-		// valueY -= dist;
-		// ball.vel.add(new JSVector(0, speed));
-		speed.setMagnitude(vel);
-		speed.setDirection(Math.PI/2);
-		ball.acc.add(speed);
-  }
-  if(event.key === "ArrowLeft"){
-		// valueX += dist;
-		// ball.vel.add(new JSVector(-speed, 0));
-		speed.setMagnitude(vel);
-		speed.setDirection(Math.PI);
-		ball.acc.add(speed);
-  }
-  if(event.key === "ArrowRight"){
-		// valueX -= dist;
-		// ball.vel.add(new JSVector(speed, 0));
-		speed.setMagnitude(vel);
-		speed.setDirection(0);
-		ball.acc.add(speed);
-  }
 }
