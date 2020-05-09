@@ -14,7 +14,7 @@ class Client {
         this.color = "#";
 
         // open a websocket connection to the server
-        this.ws = new WebSocket(url);
+        this.ws = new WebSocket("ws://localhost:8080/ws");
 
         // set up to handle the one-time open event
         this.ws.onopen = () => {
